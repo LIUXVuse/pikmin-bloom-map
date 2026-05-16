@@ -155,6 +155,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 .page-btn:hover { border-color: #f97316; color: #f97316; }
 .page-btn.active { background: #374151; color: white; border-color: #374151; }
 .page-btn:disabled { opacity: 0.4; cursor: default; }
+.card-img { cursor: zoom-in; }
+#lightbox {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+}
+#lightbox.open { display: flex; }
+#lightbox img { max-width: 92vw; max-height: 88vh; border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+#lightbox-close {
+  position: fixed; top: 16px; right: 20px; color: white; font-size: 2rem;
+  cursor: pointer; line-height: 1; user-select: none; opacity: 0.85;
+}
+#lightbox-close:hover { opacity: 1; }
 </style>
 </head>
 <body>
@@ -288,7 +300,7 @@ function renderCards(filtered) {
       : '<span class="badge badge-flow">花點</span>';
 
     const imgHtml = s.image_url
-      ? `<img class="card-img" src="${s.image_url}" alt="${(s.name || '').replace(/"/g, '&quot;')}" loading="lazy">`
+      ? `<img class="card-img" src="${s.image_url}" alt="${(s.name || '').replace(/"/g, '&quot;')}" loading="lazy" onclick="openLightbox(this.src)">`
       : `<div class="card-placeholder">無圖片</div>`;
 
     const linkHtml = s.post_url
@@ -428,7 +440,20 @@ filterAndRender();
 if (clusterGroup && clusterGroup.getLayers().length > 0) {
   map.fitBounds(clusterGroup.getBounds().pad(0.1));
 }
+
+// 燈箱
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightbox-img');
+function openLightbox(src) { lbImg.src = src; lb.classList.add('open'); }
+function closeLightbox() { lb.classList.remove('open'); lbImg.src = ''; }
+lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 </script>
+
+<div id="lightbox">
+  <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+  <img id="lightbox-img" src="" alt="放大圖片">
+</div>
 </body>
 </html>"""
 
