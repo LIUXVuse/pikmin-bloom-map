@@ -2,59 +2,70 @@
 
 ## ✅ 本次完成（2026-05-16）
 
+- **修正 index.html 沒有同步更新的問題**：之前只改 viewer.html，GitHub Pages 用的是 index.html，導致使用者看不到更新。現在每次改完都要 `cp viewer.html index.html`
+- **修正加好友 Tab 發文 400 錯誤**：Worker 的 `CATEGORIES` 陣列沒有 `friend_add`，已加入並 `wrangler deploy`
+- **修正加好友 Tab 發文 CORS/500 錯誤**：D1 資料表有 `CHECK constraint` 限制只能用舊 4 個 category，新 category 進去 DB 直接炸。已做 migration 重建資料表，永久移除 CHECK constraint
+- **錢包地址 `liupony2000.x` 可點擊複製**：點擊後出現「✅ 已複製！」2 秒消失
+- **好友代碼 `142744855919` 可點擊複製**：同上
+- **D1 schema 文件化**：`/Users/liu/Documents/porject/pikmin-board-worker/schema.sql`（無 CHECK constraint 版本）
+- **記憶系統更新**：加入兩條 feedback 記憶，以後不會再踩同樣的坑
+
+---
+
+## ✅ 先前完成（2026-05-16 同日稍早）
+
 - **揪團廣場新增「加好友 👥」Tab**（category: `friend_add`）
-  - 預設有效時間 720 小時（30 天），上限 30 天，**不可延長**
-  - 切換到此 Tab 時自動將發文表單的有效時間欄位設為 720h，提示文字也同步更新
-  - 不顯示菇/花類型快選 chips
-  - 新增 3 個範本：互加好友、送明信片、全項目揪伴
-- **頁尾加強**：加入網站功能簡介、感謝臉書社團全體成員（含社團名稱）、保留好友代碼與捐款錢包
+  - 預設 720h（30 天），上限 30 天，不可延長
+  - 無類型 chips，3 個專屬範本
+- **頁尾加強**：網站簡介、感謝臉書社團全體成員、好友代碼、捐款錢包
+- **發文表單優化**：排版重整、範本更新、成功 banner、切 Tab 不關面板
+- **generate_viewer.py 全面同步**：所有前端改動都同步進去
 
 ---
 
-## ✅ 本次完成（2026-05-16 先前）
-
-- **發文表單順序重排**：快速範本/類型 chip 移到後面，新順序為「標題 → 好友代碼 → 座標 → 快速範本 → 內容」
-- **快速範本更新**：全部改為短期用語，移除「長期」「穩定」等措辭
-- **發文成功 UX 修正**：成功後在貼文列表區顯示明顯綠色大型 banner，loadBoardPosts 延遲 600ms 執行
-- **切 Tab 不關面板 bug 修正**：切換分類 Tab 時如果發文面板是開的，即時更新標題、範本、類型 chip
-- **發文按鈕文字**：「✏️ 發文」→「✏️ 我要發文」
-- **頁面 footer 新增**：Powered by LIU、感謝臉書社群、好友代碼 142744855919、捐款錢包 liupony2000.x
-- **generate_viewer.py 同步**：所有上述改動都同步寫入
-- **README.md 更新**：底部加入支持作者區塊
-
----
-
-## ✅ 先前完成（2026-05-16 更早）
+## ✅ 更早完成
 
 ### 揪團廣場（社群功能）
-- **CF Workers + D1 後端**（`/Users/liu/Documents/porject/pikmin-board-worker/`）
-  - Worker URL：`https://pikmin-board.liupony2000.workers.dev`
-  - D1：`pikmin-board-db`（id: `db4ad625-7805-4a5d-91b0-21ca8d73009a`，APAC）
-  - 4 API：GET /api/posts、POST /api/posts、DELETE /:id、PATCH /:id/extend
-  - Cron：每天 UTC 02:00（台灣時間 10:00）清理過期貼文
+- CF Workers + D1 後端（`/Users/liu/Documents/porject/pikmin-board-worker/`）
+- Worker URL：`https://pikmin-board.liupony2000.workers.dev`
+- D1：`pikmin-board-db`（id: `db4ad625-7805-4a5d-91b0-21ca8d73009a`，APAC）
+- 4+1 API：GET/POST /api/posts、DELETE /:id、PATCH /:id/extend
+- Cron：每天 UTC 02:00（台灣時間 10:00）清理過期貼文
 
-### 前端新功能
-- 座標搜尋、❤️ 收藏、🎲 隨機、地圖收合、分頁升級
-- 卡片/地圖雙向跳轉連動
+### 前端地圖功能
+- 座標搜尋、❤️ 收藏、🎲 隨機、地圖收合、分頁、卡片/地圖雙向跳轉
 
 ---
 
 ## 🔴 下一個對話要先做
 
-- **Step 1：確認後端 Worker 是否接受 `friend_add` category**（目前 Worker 只驗證既有 4 個分類，需確認 `friend_add` 能正常發文）
-- **可考慮**：揪團廣場加關鍵字搜尋（目前只能切 Tab）
-- **可考慮**：Worker 加 rate limiting（防濫發貼文）
+- **Step 1：觀察真實使用狀況**，確認加好友 Tab 發文/瀏覽流程正常
+- **可考慮**：揪團廣場加關鍵字搜尋
+- **可考慮**：Worker 加 rate limiting 防濫發
 - **可考慮**：卡片加「在 Google Maps 開啟」連結
 
 ---
 
 ## ⚠️ 已知問題 / 注意事項
 
-- **Worker 可能需要更新**：`friend_add` 是新的 category，Worker 端若有白名單驗證需同步加入，否則發文會被拒絕。Worker 路徑：`/Users/liu/Documents/porject/pikmin-board-worker/`，修改後 `wrangler deploy`
-- **揪隊廣場 CORS**：允許 `liuxvuse.github.io` + `localhost:5500` + `null`（file://）
+### 🔴 必記：改前端的三步驟
+每次修改前端 UI：
+1. 改 `viewer.html`
+2. 改 `generate_viewer.py`（相同 HTML 字串寫在裡面）
+3. `cp viewer.html index.html`
+
+漏掉任何一步，網站就不會更新或下次跑腳本會覆蓋。
+
+### 🔴 必記：新增 category 只需改兩個地方
+1. `src/index.js` 的 `CATEGORIES` 陣列
+2. 前端的 `CATEGORY_MAP` + Tab + Templates
+3. `wrangler deploy`
+**不需要動 D1 資料庫**（CHECK constraint 已永久移除）
+
+### 其他注意事項
 - `auth_state.json` 含 Facebook cookie，**不能上傳 GitHub**（已加 .gitignore）
 - Cookie 有效期約 90 天，過期重跑 `grab_cookies.py`
-- Facebook CDN 圖片 URL 含過期 token（`oe=` 參數），現抓的約 2026 年 11 月失效
+- Facebook CDN 圖片 URL 約 2026 年 11 月失效（`oe=` 參數）
 
 ---
 
@@ -67,6 +78,7 @@
 | `python scrape.py --full` | 全抓歷史貼文 |
 | `python enrich.py` | 座標反查國家寫回 spots.json |
 | `python generate_viewer.py` | 產生 viewer.html + index.html |
+| `cp viewer.html index.html` | 同步前端到 GitHub Pages 版本 |
 | `bash update.sh` | 手動跑完整更新流程 |
 | `cd ~/Documents/porject/pikmin-board-worker && wrangler deploy` | 更新 CF Worker |
 
@@ -108,7 +120,10 @@
 ## D1 資料表（揪團廣場）
 
 ```sql
+-- 無 CHECK constraint，category 由 Worker CATEGORIES 陣列驗證
 posts (id TEXT PK, category TEXT, title TEXT, content TEXT,
        friend_code TEXT, lat REAL, lng REAL,
        token_hash TEXT, created_at INTEGER, expires_at INTEGER)
 ```
+
+完整 schema：`/Users/liu/Documents/porject/pikmin-board-worker/schema.sql`
