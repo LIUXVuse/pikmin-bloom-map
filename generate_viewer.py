@@ -241,90 +241,95 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
   .card-img, .card-placeholder { height: 100px; }
 }
 
-/* ── 社群布告欄 ─────────────────────────────── */
+/* ── 揪隊廣場 ─────────────────────────────── */
 #board-modal {
   display: none; position: fixed; inset: 0; z-index: 9998;
-  background: rgba(0,0,0,0.6); align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.55); align-items: center; justify-content: center;
   padding: 16px;
 }
 #board-modal.open { display: flex; }
 .board-container {
-  background: white; border-radius: 12px; width: 100%; max-width: 660px;
-  max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  background: white; border-radius: 16px; width: 100%; max-width: 700px;
+  max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 16px 60px rgba(0,0,0,0.35);
 }
 .board-header {
-  padding: 14px 16px 10px; border-bottom: 1px solid #f0f0f0;
+  padding: 16px 20px 12px;
+  background: linear-gradient(135deg, #fff7ed 0%, #fdf4ff 100%);
+  border-bottom: 1px solid #f0e8ff;
   display: flex; align-items: flex-start; justify-content: space-between;
 }
-.board-header-left h2 { font-size: 1rem; font-weight: 700; color: #111; }
-.board-subtitle { font-size: 0.72rem; color: #999; margin-top: 2px; }
-.board-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #888; line-height:1; padding: 0 4px; }
-.board-tabs { display: flex; border-bottom: 1px solid #f0f0f0; }
+.board-header-left h2 { font-size: 1.05rem; font-weight: 800; color: #111; letter-spacing: -0.01em; }
+.board-subtitle { font-size: 0.72rem; color: #aaa; margin-top: 3px; }
+.board-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #bbb; line-height:1; padding: 0 2px; transition: color 0.15s; }
+.board-close:hover { color: #555; }
+.board-tabs { display: flex; background: #fafafa; border-bottom: 1px solid #f0f0f0; }
 .board-tab {
-  flex: 1; padding: 9px 4px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  flex: 1; padding: 11px 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
   background: none; border: none; border-bottom: 3px solid transparent;
-  color: #888; transition: all 0.15s; white-space: nowrap;
+  color: #aaa; transition: all 0.15s; white-space: nowrap;
 }
-.board-tab.active { color: #111; border-bottom-color: currentColor; }
-.board-tab[data-cat="worker_seek_mushroom"].active { color: #f97316; }
-.board-tab[data-cat="pioneer_seek_worker"].active { color: #22c55e; }
-.board-tab[data-cat="flower_seek_flower"].active { color: #ec4899; }
-.board-tab[data-cat="god_announce_flower"].active { color: #8b5cf6; }
-.board-content { flex: 1; overflow-y: auto; padding: 12px 14px 0; position: relative; }
-.board-loading, .board-empty { text-align: center; color: #aaa; font-size: 0.85rem; padding: 32px 0; }
+.board-tab:hover { color: #666; background: #f3f4f6; }
+.board-tab.active { background: white; }
+.board-tab[data-cat="worker_seek_mushroom"].active { color: #f97316; border-bottom-color: #f97316; }
+.board-tab[data-cat="pioneer_seek_worker"].active  { color: #16a34a; border-bottom-color: #16a34a; }
+.board-tab[data-cat="flower_seek_flower"].active   { color: #db2777; border-bottom-color: #db2777; }
+.board-tab[data-cat="god_announce_flower"].active  { color: #7c3aed; border-bottom-color: #7c3aed; }
+.board-content { flex: 1; overflow-y: auto; padding: 14px 18px 4px; }
+.board-loading, .board-empty { text-align: center; color: #ccc; font-size: 0.88rem; padding: 40px 0; }
 .post-card {
-  border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px;
+  border: 1px solid #f0f0f0; border-radius: 10px; padding: 14px 14px 10px;
   margin-bottom: 10px; background: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05); transition: box-shadow 0.15s;
 }
-.post-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
-.post-title { font-weight: 700; font-size: 0.9rem; color: #111; flex: 1; }
-.post-expires { font-size: 0.72rem; color: #aaa; white-space: nowrap; }
-.post-expires.warn { background: #fee2e2; color: #b91c1c; border-radius: 8px; padding: 2px 7px; }
-.post-content { font-size: 0.83rem; color: #444; line-height: 1.5; margin-bottom: 8px; white-space: pre-wrap; word-break: break-word; }
+.post-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+.post-card[data-cat="worker_seek_mushroom"] { border-left: 3px solid #f97316; }
+.post-card[data-cat="pioneer_seek_worker"]  { border-left: 3px solid #16a34a; }
+.post-card[data-cat="flower_seek_flower"]   { border-left: 3px solid #db2777; }
+.post-card[data-cat="god_announce_flower"]  { border-left: 3px solid #7c3aed; }
+.post-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 7px; }
+.post-title { font-weight: 700; font-size: 0.92rem; color: #111; flex: 1; }
+.post-expires { font-size: 0.71rem; color: #bbb; white-space: nowrap; }
+.post-expires.warn { background: #fee2e2; color: #b91c1c; border-radius: 8px; padding: 2px 8px; font-weight: 600; }
+.post-content { font-size: 0.84rem; color: #555; line-height: 1.55; margin-bottom: 8px; white-space: pre-wrap; word-break: break-word; }
 .post-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
-.post-meta-item { font-size: 0.75rem; color: #666; display: flex; align-items: center; gap: 4px; }
-.meta-btn {
-  font-size: 0.7rem; padding: 1px 7px; border: 1px solid #e5e7eb; border-radius: 4px;
-  background: #f9fafb; cursor: pointer; color: #555; transition: background 0.12s;
-}
-.meta-btn:hover { background: #e5e7eb; }
-.post-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.act-btn { font-size: 0.72rem; padding: 3px 10px; border-radius: 5px; border: 1px solid #e5e7eb; cursor: pointer; background: #f9fafb; color: #555; transition: all 0.12s; }
+.post-meta-item { font-size: 0.76rem; color: #666; display: flex; align-items: center; gap: 5px; background: #f9fafb; border-radius: 6px; padding: 3px 8px; }
+.meta-btn { font-size: 0.69rem; padding: 1px 7px; border: 1px solid #e5e7eb; border-radius: 4px; background: white; cursor: pointer; color: #555; transition: background 0.12s; }
+.meta-btn:hover { background: #f3f4f6; }
+.post-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid #f5f5f5; margin-top: 4px; }
+.act-btn { font-size: 0.73rem; padding: 4px 12px; border-radius: 6px; border: 1px solid #e5e7eb; cursor: pointer; background: #f9fafb; color: #555; transition: all 0.12s; }
 .del-btn:hover { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
 .ext-btn:hover { background: #dcfce7; color: #15803d; border-color: #86efac; }
 .extend-panel { display: none; align-items: center; gap: 6px; font-size: 0.78rem; color: #555; flex-wrap: wrap; }
 .board-footer {
-  padding: 10px 14px; border-top: 1px solid #f0f0f0;
+  padding: 12px 18px; border-top: 1px solid #f0f0f0; background: #fafafa;
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
 #board-pager { display: flex; align-items: center; gap: 4px; }
-#post-success-tip { display: none; font-size: 0.8rem; color: #15803d; background: #dcfce7; border-radius: 6px; padding: 4px 12px; }
-.board-post-btn { padding: 6px 16px; background: #374151; color: white; border: none; border-radius: 8px; font-size: 0.82rem; cursor: pointer; transition: background 0.15s; font-weight: 600; }
-.board-post-btn:hover { background: #1f2937; }
+#post-success-tip { display: none; font-size: 0.8rem; color: #15803d; background: #dcfce7; border-radius: 6px; padding: 5px 14px; font-weight: 600; }
+.board-post-btn { padding: 8px 20px; background: #f97316; color: white; border: none; border-radius: 9px; font-size: 0.85rem; cursor: pointer; transition: background 0.15s; font-weight: 700; }
+.board-post-btn:hover { background: #ea6c0a; }
 /* 發文面板 */
-#create-post-panel {
-  display: none; position: absolute; inset: 0; background: white;
-  z-index: 10; flex-direction: column; padding: 14px;
-  overflow-y: auto;
-}
-.create-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.create-header h3 { font-size: 0.95rem; font-weight: 700; }
-.form-row { margin-bottom: 12px; }
-.form-row label { display: block; font-size: 0.78rem; font-weight: 600; color: #555; margin-bottom: 4px; }
+#create-post-panel { display: none; flex-direction: column; padding: 4px 2px 12px; }
+.create-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+.create-header h3 { font-size: 1rem; font-weight: 700; color: #111; }
+.form-row { margin-bottom: 14px; }
+.form-row label { display: block; font-size: 0.8rem; font-weight: 600; color: #444; margin-bottom: 6px; }
 .form-row input, .form-row textarea {
-  width: 100%; border: 1px solid #e5e7eb; border-radius: 7px; padding: 10px 12px;
-  font-size: 0.9rem; outline: none; font-family: inherit; transition: border-color 0.15s;
+  width: 100%; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 10px 12px;
+  font-size: 0.92rem; outline: none; font-family: inherit; transition: border-color 0.2s;
+  background: #fafafa;
 }
-.form-row input:focus, .form-row textarea:focus { border-color: #f97316; }
+.form-row input:focus, .form-row textarea:focus { border-color: #f97316; background: white; }
 .form-row textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
-.char-count { font-size: 0.7rem; color: #aaa; text-align: right; margin-top: 2px; }
-.expiry-preview { font-size: 0.73rem; color: #888; margin-top: 3px; }
-.form-hint { font-size: 0.72rem; color: #aaa; margin-top: 3px; }
-.create-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
-.create-cancel { padding: 7px 16px; border: 1px solid #e5e7eb; border-radius: 7px; background: white; cursor: pointer; font-size: 0.82rem; }
-#create-submit { padding: 7px 20px; background: #374151; color: white; border: none; border-radius: 7px; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
-#create-submit:hover { background: #1f2937; }
+.char-count { font-size: 0.7rem; color: #bbb; text-align: right; margin-top: 3px; }
+.expiry-preview { font-size: 0.76rem; color: #f97316; margin-top: 4px; font-weight: 500; }
+.form-hint { font-size: 0.73rem; color: #bbb; margin-top: 3px; }
+.create-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+.create-cancel { padding: 9px 18px; border: 1.5px solid #e5e7eb; border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; color: #666; }
+.create-cancel:hover { background: #f9fafb; }
+#create-submit { padding: 9px 24px; background: #f97316; color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+#create-submit:hover { background: #ea6c0a; }
 #create-submit:disabled { opacity: 0.5; cursor: default; }
 @media (max-width: 600px) {
   .board-container { max-height: 95vh; }
@@ -343,9 +348,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
   <select id="country" onchange="onCountry()" style="border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:0.82rem;outline:none;cursor:pointer;background:white;max-width:160px;">
     <option value="">🌍 全部國家</option>
   </select>
-  <button class="filter-btn" data-filter="fav" onclick="setFilter('fav')">❤️ 收藏</button>
+  <button class="filter-btn" id="fav-btn" data-filter="fav" onclick="toggleFavFilter()">❤️ 收藏</button>
   <button class="filter-btn" onclick="randomSpot()" style="white-space:nowrap">🎲 隨機</button>
-  <button class="filter-btn" onclick="openBoardModal()" style="white-space:nowrap">📢 布告欄</button>
+  <button class="filter-btn" onclick="openBoardModal()" style="white-space:nowrap">🌿 揪隊廣場</button>
 <span id="count"></span>
 </div>
 
@@ -627,6 +632,10 @@ function setFilter(f) {
 // ── 收藏 ─────────────────────────────────────────────────────────
 let favSet = new Set(JSON.parse(localStorage.getItem('pikmin_favs') || '[]'));
 function saveFavs() { localStorage.setItem('pikmin_favs', JSON.stringify([...favSet])); }
+function toggleFavFilter() {
+  if (currentFilter === 'fav') setFilter('all');
+  else setFilter('fav');
+}
 function toggleFav(spotId, btn) {
   if (favSet.has(spotId)) {
     favSet.delete(spotId);
@@ -843,6 +852,7 @@ function renderBoardPosts(data) {
     card.className = 'post-card';
     card.dataset.postId = post.id;
     card.dataset.expiresAt = post.expires_at;
+    card.dataset.cat = post.category;
     card.innerHTML = `
       <div class="post-header">
         <div class="post-title">${escHtml(post.title)}</div>
@@ -937,10 +947,12 @@ function openCreatePost() {
   document.getElementById('create-title-count').textContent='0/100';
   document.getElementById('create-content-count').textContent='0/2000';
   updateExpiryPreview();
+  document.getElementById('board-post-list').style.display='none';
   document.getElementById('create-post-panel').style.display='flex';
 }
 function closeCreatePost() {
   document.getElementById('create-post-panel').style.display='none';
+  document.getElementById('board-post-list').style.display='';
 }
 function updateExpiryPreview() {
   const h = parseInt(document.getElementById('create-hours').value)||120;
@@ -992,8 +1004,8 @@ async function submitPost() {
   <div class="board-container">
     <div class="board-header">
       <div class="board-header-left">
-        <h2>📢 社群布告欄</h2>
-        <div class="board-subtitle">貼文管理權儲存於此瀏覽器，換裝置或清除資料將失去刪除/延長能力</div>
+        <h2>🌿 揪隊廣場</h2>
+        <div class="board-subtitle">收藏與貼文管理權儲存於此裝置，換瀏覽器將重置</div>
       </div>
       <button class="board-close" onclick="closeBoardModal()">✕</button>
     </div>
