@@ -2,23 +2,25 @@
 
 ## ✅ 本次完成（2026-05-16）
 
-- **發文表單順序重排**：快速範本/類型 chip 移到後面，新順序為「標題 → 好友代碼 → 座標 → 快速範本 → 內容」
-- **快速範本更新**：全部改為短期用語，移除「長期」「穩定」等措辭；各分類（求菇/求打工/求花/花點公布）有獨立對應範本
-- **發文成功 UX 修正**：成功後在貼文列表區顯示明顯綠色大型 banner，loadBoardPosts 延遲 600ms 執行避免 D1 寫入延遲
-- **切 Tab 不關面板 bug 修正**：切換分類 Tab 時如果發文面板是開的，即時更新標題、範本、類型 chip，不再需要先按 X 再重開
-- **發文按鈕文字**：「✏️ 發文」→「✏️ 我要發文」
-- **頁面 footer 新增**：Powered by LIU、感謝臉書社群、好友代碼 142744855919、捐款錢包 liupony2000.x
-- **generate_viewer.py 同步**：所有上述改動都同步寫入，避免下次跑腳本覆蓋
-- **README.md 更新**：底部加入支持作者區塊
+- **揪團廣場新增「加好友 👥」Tab**（category: `friend_add`）
+  - 預設有效時間 720 小時（30 天），上限 30 天，**不可延長**
+  - 切換到此 Tab 時自動將發文表單的有效時間欄位設為 720h，提示文字也同步更新
+  - 不顯示菇/花類型快選 chips
+  - 新增 3 個範本：互加好友、送明信片、全項目揪伴
+- **頁尾加強**：加入網站功能簡介、感謝臉書社團全體成員（含社團名稱）、保留好友代碼與捐款錢包
 
 ---
 
 ## ✅ 本次完成（2026-05-16 先前）
 
-- **花類型 chip 拆分**：`FLOWER_TYPES`（混合）→ `FLOWER_COLORS`（7 色）+ `FLOWER_SEEDLINGS`（5 種花苗）
-- **改名**：揪隊廣場 → 🌿 揪團廣場（全域替換）
-- **CORS 修正**：Worker 加入 `null` origin 支援，`file://` 本機直開也能測試發文
-- **清空測試資料**：D1 資料庫測試貼文已刪除
+- **發文表單順序重排**：快速範本/類型 chip 移到後面，新順序為「標題 → 好友代碼 → 座標 → 快速範本 → 內容」
+- **快速範本更新**：全部改為短期用語，移除「長期」「穩定」等措辭
+- **發文成功 UX 修正**：成功後在貼文列表區顯示明顯綠色大型 banner，loadBoardPosts 延遲 600ms 執行
+- **切 Tab 不關面板 bug 修正**：切換分類 Tab 時如果發文面板是開的，即時更新標題、範本、類型 chip
+- **發文按鈕文字**：「✏️ 發文」→「✏️ 我要發文」
+- **頁面 footer 新增**：Powered by LIU、感謝臉書社群、好友代碼 142744855919、捐款錢包 liupony2000.x
+- **generate_viewer.py 同步**：所有上述改動都同步寫入
+- **README.md 更新**：底部加入支持作者區塊
 
 ---
 
@@ -39,7 +41,7 @@
 
 ## 🔴 下一個對話要先做
 
-- **Step 1：觀察揪團廣場真實使用狀況**，確認發文/瀏覽流程沒有問題
+- **Step 1：確認後端 Worker 是否接受 `friend_add` category**（目前 Worker 只驗證既有 4 個分類，需確認 `friend_add` 能正常發文）
 - **可考慮**：揪團廣場加關鍵字搜尋（目前只能切 Tab）
 - **可考慮**：Worker 加 rate limiting（防濫發貼文）
 - **可考慮**：卡片加「在 Google Maps 開啟」連結
@@ -48,8 +50,8 @@
 
 ## ⚠️ 已知問題 / 注意事項
 
+- **Worker 可能需要更新**：`friend_add` 是新的 category，Worker 端若有白名單驗證需同步加入，否則發文會被拒絕。Worker 路徑：`/Users/liu/Documents/porject/pikmin-board-worker/`，修改後 `wrangler deploy`
 - **揪隊廣場 CORS**：允許 `liuxvuse.github.io` + `localhost:5500` + `null`（file://）
-- **Worker 原始碼在本機**：`/Users/liu/Documents/porject/pikmin-board-worker/`，修改後需重跑 `wrangler deploy`
 - `auth_state.json` 含 Facebook cookie，**不能上傳 GitHub**（已加 .gitignore）
 - Cookie 有效期約 90 天，過期重跑 `grab_cookies.py`
 - Facebook CDN 圖片 URL 含過期 token（`oe=` 參數），現抓的約 2026 年 11 月失效
