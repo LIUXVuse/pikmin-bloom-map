@@ -296,6 +296,30 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 #post-success-tip { display: none; font-size: 0.8rem; color: #15803d; background: #dcfce7; border-radius: 6px; padding: 5px 14px; font-weight: 600; }
 .board-post-btn { padding: 8px 20px; background: #f97316; color: white; border: none; border-radius: 9px; font-size: 0.85rem; cursor: pointer; transition: background 0.15s; font-weight: 700; }
 .board-post-btn:hover { background: #ea6c0a; }
+/* 我的好友代碼 bar */
+.my-fc-bar {
+  display: flex; align-items: center; gap: 8px; padding: 8px 18px;
+  background: #fffbeb; border-bottom: 1px solid #fef3c7; font-size: 0.78rem;
+}
+.my-fc-label { color: #92400e; font-weight: 600; white-space: nowrap; }
+.my-fc-value { color: #374151; font-family: monospace; font-size: 0.82rem; flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.my-fc-edit { font-size: 0.71rem; padding: 2px 10px; border: 1px solid #d97706; border-radius: 5px; background: white; color: #d97706; cursor: pointer; white-space: nowrap; }
+.my-fc-edit:hover { background: #fffbeb; }
+.my-fc-input-row { display: none; align-items: center; gap: 6px; width: 100%; }
+.my-fc-input-row input { flex: 1; border: 1.5px solid #f59e0b; border-radius: 6px; padding: 4px 8px; font-size: 0.82rem; outline: none; font-family: monospace; }
+.my-fc-save { font-size: 0.75rem; padding: 4px 12px; border: none; border-radius: 6px; background: #f59e0b; color: white; cursor: pointer; font-weight: 600; }
+
+/* 範本選擇 */
+.template-section { margin-bottom: 14px; }
+.template-section-label { font-size: 0.75rem; color: #999; margin-bottom: 6px; }
+.template-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.template-chip { font-size: 0.75rem; padding: 5px 12px; border: 1.5px solid #e5e7eb; border-radius: 20px; background: white; cursor: pointer; color: #555; transition: all 0.15s; white-space: nowrap; }
+.template-chip:hover { border-color: #f97316; color: #f97316; background: #fff7ed; }
+
+/* 好友代碼帶入按鈕 */
+.fc-apply-btn { font-size: 0.72rem; padding: 2px 10px; border: 1px solid #e5e7eb; border-radius: 5px; background: #f9fafb; color: #555; cursor: pointer; margin-top: 4px; }
+.fc-apply-btn:hover { background: #f3f4f6; border-color: #d1d5db; }
+
 /* 發文面板 */
 #create-post-panel { display: none; flex-direction: column; padding: 4px 2px 12px; }
 .create-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
@@ -780,6 +804,7 @@ let boardCountdownInterval = null;
 
 function openBoardModal() {
   document.getElementById('board-modal').classList.add('open');
+  renderMyFC();
   loadBoardPosts();
   boardCountdownInterval = setInterval(updateCountdowns, 60000);
 }
@@ -927,6 +952,87 @@ async function extendPost(id, btn) {
   } catch { btn.textContent='失敗'; setTimeout(()=>{btn.textContent='確認';btn.disabled=false;},2000); }
 }
 
+// ── 我的好友代碼 ─────────────────────────────────────────────────
+let myFC = localStorage.getItem('pikmin_my_fc') || '';
+function renderMyFC() {
+  const disp = document.getElementById('my-fc-display');
+  const btn = document.getElementById('fc-apply-btn');
+  if (myFC) {
+    disp.textContent = myFC;
+    disp.style.color = '#374151';
+    if (btn) btn.style.display = 'block';
+  } else {
+    disp.textContent = '（尚未設定）';
+    disp.style.color = '#aaa';
+    if (btn) btn.style.display = 'none';
+  }
+}
+function toggleFCEdit() {
+  const row = document.getElementById('my-fc-input-row');
+  const isOpen = row.style.display === 'flex';
+  row.style.display = isOpen ? 'none' : 'flex';
+  if (!isOpen) {
+    const inp = document.getElementById('my-fc-input');
+    inp.value = myFC;
+    inp.focus();
+  }
+}
+function saveMyFC() {
+  const val = document.getElementById('my-fc-input').value.trim();
+  myFC = val;
+  localStorage.setItem('pikmin_my_fc', val);
+  document.getElementById('my-fc-input-row').style.display = 'none';
+  renderMyFC();
+}
+function applyMyFC() {
+  if (myFC) document.getElementById('create-fc').value = myFC;
+}
+// Enter 鍵儲存
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('my-fc-input');
+  if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') saveMyFC(); });
+});
+
+// ── 揪團範本 ─────────────────────────────────────────────────────
+const TEMPLATES = {
+  worker_seek_mushroom: [
+    { label: '求打工人 💪', title: '求打工人！有菇快來飛', content: '菇點出現了！誠徵打工人飛過來一起打，人多力量大 🍄\n加好友後跟我說一聲，時間到一起開打！\n好友代碼如下 👇' },
+    { label: '招募打菇隊 🍄', title: '【求打工】今日有菇，招募打菇隊', content: '今天有菇點，需要打工人一起來飛！\n歡迎加好友，我有菇就發邀請，你有空就飛來 🙌\n好友代碼如下 👇' },
+  ],
+  pioneer_seek_worker: [
+    { label: '開荒求打工 🌿', title: '開荒中，求穩定打工人長期合作', content: '我常在這區跑，菇點不少，需要穩定打工人！\n我負責找菇點、發邀請，你負責飛來打 💪\n加好友後我有菇就通知你 🌿' },
+    { label: '招募長期夥伴', title: '招募打菇夥伴，我有菇就叫你', content: '誠徵長期打工夥伴！有菇我就發邀，人到就開打。\n加好友後互通有無，一起衝菇量 🍄\n好友代碼如下 👇' },
+  ],
+  flower_seek_flower: [
+    { label: '求花點座標 🌸', title: '求花點座標分享，感謝！', content: '想採花但不知道哪裡花況好 🌸\n請問有人可以分享附近好花點的座標嗎？\n或是有花友想一起去採的也歡迎揪！' },
+    { label: '找花友同行 🌷', title: '找花友一起種花採花', content: '想找花友一起行動，種花採花更有效率！\n有好花點或想一起去的，加好友一起出發 🌷\n好友代碼如下 👇' },
+  ],
+  god_announce_flower: [
+    { label: '分享花點 🌸', title: '花點分享 🌸 歡迎來採', content: '分享一個超棒的花點！花況很好，歡迎飛過來採花 🌷\n座標如上，不用打招呼直接加好友來就好！\n有問題歡迎留言 ✨' },
+    { label: '花海開放 ✨', title: '【花點】這裡花況超讚，隨時歡迎來', content: '推薦這個地點，花很多很密！\n隨時歡迎飛過來採，不用事先通知 🌸\n座標如上，好友代碼如下 👇' },
+  ],
+};
+function applyTemplate(idx) {
+  const tpl = TEMPLATES[boardCategory]?.[idx];
+  if (!tpl) return;
+  document.getElementById('create-title').value = tpl.title;
+  document.getElementById('create-content').value = tpl.content;
+  document.getElementById('create-title-count').textContent = tpl.title.length + '/100';
+  document.getElementById('create-content-count').textContent = tpl.content.length + '/2000';
+}
+function renderTemplateChips() {
+  const container = document.getElementById('template-chips');
+  container.innerHTML = '';
+  (TEMPLATES[boardCategory] || []).forEach((t, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'template-chip';
+    btn.textContent = t.label;
+    btn.onclick = () => applyTemplate(i);
+    container.appendChild(btn);
+  });
+}
+
 // ── 發文 ─────────────────────────────────────────────────────────
 function openCreatePost() {
   document.getElementById('create-post-form').reset();
@@ -934,6 +1040,8 @@ function openCreatePost() {
   document.getElementById('create-title-count').textContent='0/100';
   document.getElementById('create-content-count').textContent='0/2000';
   updateExpiryPreview();
+  renderTemplateChips();
+  renderMyFC();
   document.getElementById('board-post-list').style.display='none';
   document.getElementById('create-post-panel').style.display='flex';
 }
@@ -1002,6 +1110,16 @@ async function submitPost() {
       <button class="board-tab" data-cat="flower_seek_flower" onclick="switchBoardTab('flower_seek_flower')">求花 🌸</button>
       <button class="board-tab" data-cat="god_announce_flower" onclick="switchBoardTab('god_announce_flower')">公布花點 ✨</button>
     </div>
+    <div class="my-fc-bar" id="my-fc-bar">
+      <span class="my-fc-label">我的代碼</span>
+      <span class="my-fc-value" id="my-fc-display">（尚未設定）</span>
+      <button class="my-fc-edit" onclick="toggleFCEdit()">✏️ 設定</button>
+      <div class="my-fc-input-row" id="my-fc-input-row">
+        <input id="my-fc-input" type="text" placeholder="輸入你的好友代碼" maxlength="30">
+        <button class="my-fc-save" onclick="saveMyFC()">儲存</button>
+        <button class="my-fc-edit" onclick="toggleFCEdit()">取消</button>
+      </div>
+    </div>
     <div class="board-content">
       <div id="board-post-list"></div>
       <div id="create-post-panel">
@@ -1010,6 +1128,10 @@ async function submitPost() {
           <button class="board-close" onclick="closeCreatePost()">✕</button>
         </div>
         <form id="create-post-form" onsubmit="return false">
+          <div class="template-section">
+            <div class="template-section-label">📋 快速範本（點了可修改）</div>
+            <div class="template-chips" id="template-chips"></div>
+          </div>
           <div class="form-row">
             <label>標題 *</label>
             <input id="create-title" type="text" maxlength="100" placeholder="簡短說明你的需求"
@@ -1024,7 +1146,8 @@ async function submitPost() {
           </div>
           <div class="form-row">
             <label>好友代碼（選填）</label>
-            <input id="create-fc" type="text" maxlength="20" placeholder="例：123456789">
+            <input id="create-fc" type="text" maxlength="30" placeholder="例：1234 5678 9012">
+            <button type="button" class="fc-apply-btn" id="fc-apply-btn" onclick="applyMyFC()" style="display:none">👤 帶入我的代碼</button>
           </div>
           <div class="form-row">
             <label>座標（選填）</label>
