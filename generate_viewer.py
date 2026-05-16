@@ -174,6 +174,20 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 }
 #lightbox-close:hover { opacity: 1; }
 
+@media (min-width: 768px) {
+  #map { height: 55vh; }
+  #cards {
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px 28px 0;
+    gap: 16px;
+  }
+  #pagination { max-width: 1440px; margin-left: auto; margin-right: auto; }
+  .card-img, .card-placeholder { height: 130px; }
+}
+
 @media (max-width: 600px) {
   #toolbar { padding: 10px 12px; gap: 8px; }
   #toolbar h1 { width: 100%; font-size: 1rem; }
