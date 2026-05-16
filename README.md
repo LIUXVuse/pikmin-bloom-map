@@ -9,7 +9,10 @@ Facebook 社團「[皮克敏(Pikmin Bloom)明信片GPS 座標](https://www.faceb
 - 自動抓取社團貼文中的 GPS 座標（644 筆，70 個國家）
 - 支援增量更新（只抓新貼文，碰到舊資料自動停）
 - 座標自動反查國家/城市（離線，無需 API）
-- 互動地圖：聚合 marker、搜尋、菇點/花點篩選、國家篩選、分頁、圖片放大、一鍵複製座標
+- 互動地圖：聚合 marker、搜尋（含座標搜尋）、菇點/花點篩選、國家篩選、分頁跳頁、圖片放大、一鍵複製座標
+- 地圖/卡片雙向跳轉連動
+- ❤️ 收藏功能（localStorage）、🎲 隨機跳點、地圖可收合
+- 🌿 **揪隊廣場**：社群求菇/求打工/求花/公布花點，Cloudflare Workers + D1 後端，貼文最長 30 天自動刪除
 - 全裝置 RWD 適配（手機 / 平板 / 桌機）
 
 ## 快速開始
@@ -82,3 +85,5 @@ push 完 GitHub Pages 自動重新部署。
 - `auth_state.json` 含 Facebook cookie，不上傳 GitHub（已加 .gitignore）
 - Cookie 有效期約 90 天，過期重跑 `grab_cookies.py`
 - 資料全部內嵌在 index.html，無需資料庫或後端 server
+- 揪隊廣場的貼文存在 Cloudflare D1，Worker 部署在 `pikmin-board.liupony2000.workers.dev`
+- Worker 原始碼在本機：`/Users/liu/Documents/porject/pikmin-board-worker/`，修改後 `wrangler deploy`
