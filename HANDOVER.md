@@ -2,28 +2,26 @@
 
 ## ✅ 本次完成（2026-05-16）
 
-- 建立完整爬蟲系統（`scrape.py`）
-  - Playwright + Chrome cookie 登入（`grab_cookies.py`）
-  - 策略：收集貼文連結 → 逐篇進 dialog 抓座標
-  - 每 10 筆自動存檔，支援 `--full` 全抓 / 增量模式
-- 首次全抓：1230 篇貼文 → 649 筆有座標
-- 座標反查國家（`enrich.py`）：70 個國家全中文名稱
-- WebUI（`generate_viewer.py` → `viewer.html` + `index.html`）
-  - Leaflet + MarkerCluster 聚合地圖
-  - 搜尋、菇點/花點篩選、國家下拉、排序、分頁（24筆/頁）
-  - 卡片圖片點擊放大（燈箱）— 修復 JS DOM 執行順序 bug
-- 部署到 GitHub Pages：https://liuxvuse.github.io/pikmin-bloom-map/
-- 每天早上 8:00 cron 自動增量抓取 + commit + push（`update.sh`）
-- SSH key 永久存放：`~/.ssh/pikmin_bloom_key`
+- **手機 RWD 適配**（`generate_viewer.py`）
+  - 工具列標題獨佔一行、搜尋框全寬（手機）
+  - 地圖高度手機縮為 40vh（最小 220px）
+  - 卡片從 `flex + 固定 200px` 改為 `CSS Grid + auto-fill minmax`，自動適配欄數
+- **桌機 RWD 優化**
+  - 卡片欄寬升至 185px，間距 16px，側邊 28px
+  - 卡片區最大寬 1440px 置中，超寬螢幕不再拉爆
+  - 桌機地圖高度 55vh、圖片高 130px
+- **移除新舊排序功能**
+  - scraped_at 時間戳不可信（舊貼文先抓，時間反而早），排序功能誤導使用者，直接移除
+- **每張卡片新增「📋 複製座標」按鈕**
+  - 點擊即複製 `緯度, 經度` 到剪貼簿
+  - 1.5 秒後按鈕恢復原狀
 
 ## 🔴 下一個對話要先做
 
-- **Step 1：手機 / 平板 RWD 適配**（最高優先）
-  - 目前工具列在手機上擠在一行，篩選按鈕會溢出
-  - 地圖高度在手機上太矮
-  - 卡片 200px 固定寬在手機上每排只能放 1～2 張，要調整
-  - 建議：工具列改成兩行（手機），卡片改用 `grid` 自動適配欄數，地圖高度響應式
-  - 修改 `generate_viewer.py` 裡的 CSS，重新產生 `index.html` 後 push
+- **Step 1：無（目前功能完整，等有新需求再開）**
+  - 可考慮：點擊地圖 Marker 時直接在卡片區 highlight 對應卡片
+  - 可考慮：搜尋框支援座標貼入，自動定位到最近的點
+  - 可考慮：卡片加入「在 Google Maps 開啟」連結
 
 ## ⚠️ 已知問題 / 注意事項
 
