@@ -67,16 +67,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 .filter-btn.active-mush { background: #f97316; color: white; border-color: #f97316; }
 .filter-btn.active-flow { background: #ec4899; color: white; border-color: #ec4899; }
 
-#sort {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 5px 8px;
-  font-size: 0.82rem;
-  outline: none;
-  cursor: pointer;
-  background: white;
-}
-
 #count { font-size: 0.82rem; color: #888; margin-left: auto; white-space: nowrap; }
 
 #map { height: 50vh; min-height: 300px; }
@@ -189,11 +179,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
   <select id="country" onchange="onCountry()" style="border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:0.82rem;outline:none;cursor:pointer;background:white;max-width:160px;">
     <option value="">🌍 全部國家</option>
   </select>
-  <select id="sort" onchange="onSort()">
-    <option value="newest">最新優先</option>
-    <option value="oldest">最舊優先</option>
-  </select>
-  <span id="count"></span>
+<span id="count"></span>
 </div>
 
 <div id="map"></div>
@@ -209,7 +195,6 @@ const PAGE_SIZE = 24;
 
 let currentFilter = 'all';
 let currentSearch = '';
-let currentSort = 'newest';
 let currentCountry = '';
 let currentPage = 1;
 let clusterGroup = null;
@@ -265,14 +250,7 @@ function getFiltered() {
     result = result.filter(s => s.country === currentCountry);
   }
 
-  // sort
-  result.sort((a, b) => {
-    const ta = a.scraped_at || '';
-    const tb = b.scraped_at || '';
-    return currentSort === 'newest' ? tb.localeCompare(ta) : ta.localeCompare(tb);
-  });
-
-  return result;
+return result;
 }
 
 function renderMarkers(filtered) {
@@ -413,11 +391,6 @@ function setFilter(f) {
 
 function onSearch() {
   currentSearch = document.getElementById('search').value.trim();
-  filterAndRender();
-}
-
-function onSort() {
-  currentSort = document.getElementById('sort').value;
   filterAndRender();
 }
 
