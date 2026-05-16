@@ -241,7 +241,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
   .card-img, .card-placeholder { height: 100px; }
 }
 
-/* ── 揪隊廣場 ─────────────────────────────── */
+/* ── 揪團廣場 ─────────────────────────────── */
 #board-modal {
   display: none; position: fixed; inset: 0; z-index: 9998;
   background: rgba(0,0,0,0.55); align-items: center; justify-content: center;
@@ -350,7 +350,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
   </select>
   <button class="filter-btn" id="fav-btn" data-filter="fav" onclick="toggleFavFilter()">❤️ 收藏</button>
   <button class="filter-btn" onclick="randomSpot()" style="white-space:nowrap">🎲 隨機</button>
-  <button class="filter-btn" onclick="openBoardModal()" style="white-space:nowrap">🌿 揪隊廣場</button>
+  <button class="filter-btn" onclick="openBoardModal()" style="white-space:nowrap">🌿 揪團廣場</button>
 <span id="count"></span>
 </div>
 
@@ -1004,7 +1004,7 @@ async function submitPost() {
   <div class="board-container">
     <div class="board-header">
       <div class="board-header-left">
-        <h2>🌿 揪隊廣場</h2>
+        <h2>🌿 揪團廣場</h2>
         <div class="board-subtitle">收藏與貼文管理權儲存於此裝置，換瀏覽器將重置</div>
       </div>
       <button class="board-close" onclick="closeBoardModal()">✕</button>
