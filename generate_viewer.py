@@ -1176,11 +1176,14 @@ async function submitPost() {
     if (res.ok) {
       boardTokens[data.id]=data.token;
       localStorage.setItem('pikmin_board_tokens',JSON.stringify(boardTokens));
-      closeCreatePost(); boardPage=1; loadBoardPosts();
-      const tip=document.getElementById('post-success-tip');
-      tip.style.display='block'; setTimeout(()=>tip.style.display='none',3500);
-    } else { alert(data.error||'發文失敗，請稍後再試'); }
-  } catch { alert('網路錯誤，請稍後再試'); }
+      closeCreatePost();
+      // 先顯示成功 banner，再延遲載入清單（避免 D1 寫入延遲）
+      const list = document.getElementById('board-post-list');
+      list.innerHTML = '<div style="text-align:center;padding:32px 0;font-size:1rem;color:#15803d;background:#dcfce7;border-radius:10px;font-weight:700;margin:8px 0">✅ 發文成功！貼文已送出，稍後刷新可看到</div>';
+      boardPage=1;
+      setTimeout(loadBoardPosts, 600);
+    } else { alert('發文失敗：' + (data.error||'請稍後再試')); }
+  } catch(e) { alert('網路錯誤，無法連線到伺服器\\n' + (e.message||'')); }
   submitBtn.disabled=false; submitBtn.textContent='發文';
 }
 </script>
