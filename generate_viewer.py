@@ -275,6 +275,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 .board-tab[data-cat="pioneer_seek_worker"].active  { color: #16a34a; border-bottom-color: #16a34a; }
 .board-tab[data-cat="flower_seek_flower"].active   { color: #db2777; border-bottom-color: #db2777; }
 .board-tab[data-cat="god_announce_flower"].active  { color: #7c3aed; border-bottom-color: #7c3aed; }
+.board-tab[data-cat="friend_add"].active           { color: #0ea5e9; border-bottom-color: #0ea5e9; }
 .board-content { flex: 1; overflow-y: auto; padding: 14px 18px 4px; }
 .board-loading, .board-empty { text-align: center; color: #ccc; font-size: 0.88rem; padding: 40px 0; }
 .post-card {
@@ -815,6 +816,7 @@ const CATEGORY_MAP = {
   pioneer_seek_worker:  { label: '求打工 🌿' },
   flower_seek_flower:   { label: '求花 🌸' },
   god_announce_flower:  { label: '公布花點 ✨' },
+  friend_add:           { label: '加好友 👥' },
 };
 let boardCategory = 'worker_seek_mushroom';
 let boardPage = 1;
@@ -839,6 +841,7 @@ function switchBoardTab(category) {
   // 如果發文面板是開著的，重新渲染對應分類的內容
   if (document.getElementById('create-post-panel').style.display === 'flex') {
     document.getElementById('create-category-label').textContent = CATEGORY_MAP[boardCategory].label;
+    updateHoursField();
     renderTemplateChips();
     renderTypeChips();
   } else {
@@ -1037,6 +1040,11 @@ const TEMPLATES = {
     { label: '分享花點 🌸', title: '花點分享！花況很好歡迎來採', content: '分享一個不錯的花點，花很多！\\n座標如上，歡迎加好友飛過來採 🌷\\n不用打招呼直接加就好 ✨' },
     { label: '公布花海 🌊', title: '這裡花超多！座標公布', content: '強推這個地點，花況超讚！\\n隨時歡迎來採，花多到採不完 🌸\\n座標如上，有問題歡迎留言 🙌' },
   ],
+  friend_add: [
+    { label: '互加好友 👥', title: '徵好友！歡迎互加', content: '想擴充好友清單，歡迎互加 👋\\n有在打菇、採花、送明信片的朋友最歡迎！\\n直接加我就好，不用打招呼 😊\\n好友代碼如下 👇' },
+    { label: '送明信片 🌸', title: '送明信片徵好友！', content: '有在認真送明信片，歡迎互加好友 🌸\\n每天都有在線，會定期送卡 ✨\\n好友代碼如下 👇' },
+    { label: '全項目揪伴 🍄🌸', title: '揪伴！打菇採花送卡都可以', content: '想找一起玩的朋友 🍄🌸\\n打菇、採花、送明信片都有在做！\\n加好友後一起行動 💪\\n好友代碼如下 👇' },
+  ],
 };
 function applyTemplate(idx) {
   const tpl = TEMPLATES[boardCategory]?.[idx];
@@ -1105,6 +1113,10 @@ function renderTypeChips() {
   const labelEl = document.getElementById('type-section-label');
   const container = document.getElementById('type-chips');
   container.innerHTML = '';
+  if (boardCategory === 'friend_add') {
+    section.style.display = 'none';
+    return;
+  }
   if (MUSH_CATS.has(boardCategory)) {
     labelEl.textContent = '🍄 菇的類型（選填，點選加入標題）';
     makeTypeChipGroup(container, MUSH_TYPES);
@@ -1135,12 +1147,21 @@ function removeTypeTag() {
 }
 
 // ── 發文 ─────────────────────────────────────────────────────────
+function updateHoursField() {
+  const isFriend = boardCategory === 'friend_add';
+  const hoursEl = document.getElementById('create-hours');
+  hoursEl.value = isFriend ? 720 : 120;
+  document.getElementById('hours-hint').textContent = isFriend
+    ? '最長 30 天（720 小時），到期後自動刪除，不可延長'
+    : '預設 120 小時（5 天），到期後自動刪除，最長 720 小時（30 天）';
+  updateExpiryPreview();
+}
 function openCreatePost() {
   document.getElementById('create-post-form').reset();
   document.getElementById('create-category-label').textContent = CATEGORY_MAP[boardCategory].label;
   document.getElementById('create-title-count').textContent='0/100';
   document.getElementById('create-content-count').textContent='0/2000';
-  updateExpiryPreview();
+  updateHoursField();
   renderTemplateChips();
   renderTypeChips();
   renderMyFC();
@@ -1214,6 +1235,7 @@ async function submitPost() {
       <button class="board-tab" data-cat="pioneer_seek_worker" onclick="switchBoardTab('pioneer_seek_worker')">求打工 🌿</button>
       <button class="board-tab" data-cat="flower_seek_flower" onclick="switchBoardTab('flower_seek_flower')">求花 🌸</button>
       <button class="board-tab" data-cat="god_announce_flower" onclick="switchBoardTab('god_announce_flower')">公布花點 ✨</button>
+      <button class="board-tab" data-cat="friend_add" onclick="switchBoardTab('friend_add')">加好友 👥</button>
     </div>
     <div class="my-fc-bar" id="my-fc-bar">
       <span class="my-fc-label">我的代碼</span>
@@ -1267,7 +1289,7 @@ async function submitPost() {
             <label>有效時間（小時）</label>
             <input id="create-hours" type="number" min="1" max="720" value="120" oninput="updateExpiryPreview()">
             <div class="expiry-preview" id="expiry-preview"></div>
-            <div class="form-hint">預設 120 小時（5 天），到期後自動刪除，最長 720 小時（30 天）</div>
+            <div class="form-hint" id="hours-hint">預設 120 小時（5 天），到期後自動刪除，最長 720 小時（30 天）</div>
           </div>
         </form>
         <div class="create-footer">
@@ -1284,16 +1306,25 @@ async function submitPost() {
   </div>
 </div>
 
-<footer style="text-align:center;padding:24px 16px 32px;font-size:0.82rem;color:#888;line-height:2;border-top:1px solid #f0f0f0;margin-top:8px">
-  <div style="margin-bottom:6px">Powered by <strong style="color:#f97316">LIU</strong> 🍄</div>
-  <div style="margin-bottom:4px">感謝臉書社團網友提供的美麗明信片、花點與菇點 🌸🍄</div>
-  <div>歡迎加我的皮克敏好友，送我美麗的明信片 🌸<br>
+<footer style="text-align:center;padding:32px 20px 40px;font-size:0.82rem;color:#888;line-height:2;border-top:1px solid #f0f0f0;margin-top:8px">
+  <div style="margin-bottom:12px;font-size:0.9rem;font-weight:700;color:#374151">🍄 皮克敏明信片地圖</div>
+  <div style="max-width:480px;margin:0 auto 12px;font-size:0.8rem;color:#999;line-height:1.8">
+    這是一個由玩家自製的互動地圖，整合了臉書社團「皮克敏(Pikmin Bloom)明信片GPS 座標」的座標資料。<br>
+    支援聚合地圖、搜尋篩選、收藏、揪團廣場等功能，全裝置友好。
+  </div>
+  <div style="margin-bottom:8px;color:#aaa;font-size:0.78rem">
+    深深感謝臉書社團「<strong style="color:#f97316">皮克敏(Pikmin Bloom)明信片GPS 座標</strong>」的所有成員 🙏<br>
+    每一筆座標、每一張明信片、每一個花點與菇點，都是大家無私分享的成果 🌸🍄
+  </div>
+  <div style="margin-bottom:8px">
+    歡迎加我的皮克敏好友，送我美麗的明信片 🌸<br>
     我的好友代碼：<strong style="color:#374151;font-family:monospace;font-size:0.9rem">142744855919</strong>
   </div>
-  <div style="margin-top:8px;font-size:0.78rem">
+  <div style="margin-bottom:10px;font-size:0.78rem">
     如果這個網站有幫到你，歡迎打虛擬幣到我的多幣錢包 👇<br>
     <strong style="color:#7c3aed;font-family:monospace">liupony2000.x</strong>
   </div>
+  <div style="font-size:0.75rem;color:#ccc">Powered by <strong style="color:#f97316">LIU</strong> 🍄</div>
 </footer>
 </body>
 </html>"""
