@@ -1214,6 +1214,13 @@ async function submitPost() {
   } catch(e) { alert('網路錯誤，無法連線到伺服器\\n' + (e.message||'')); }
   submitBtn.disabled=false; submitBtn.textContent='發文';
 }
+function copyFC() {
+  navigator.clipboard.writeText('142744855919').then(() => {
+    const el = document.getElementById('fc-copied');
+    el.style.display = 'inline';
+    setTimeout(() => { el.style.display = 'none'; }, 2000);
+  });
+}
 function copyWallet() {
   navigator.clipboard.writeText('liupony2000.x').then(() => {
     const el = document.getElementById('wallet-copied');
@@ -1325,7 +1332,8 @@ function copyWallet() {
   </div>
   <div style="margin-bottom:8px">
     歡迎加我的皮克敏好友，送我美麗的明信片 🌸<br>
-    我的好友代碼：<strong style="color:#374151;font-family:monospace;font-size:0.9rem">142744855919</strong>
+    我的好友代碼：<span onclick="copyFC()" style="color:#374151;font-family:monospace;font-size:0.9rem;font-weight:700;cursor:pointer;border-bottom:1px dashed #374151" title="點擊複製">142744855919</span>
+    <span id="fc-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span>
   </div>
   <div style="margin-bottom:10px;font-size:0.78rem">
     如果這個網站有幫到你，歡迎打虛擬幣到我的多幣錢包 👇<br>
