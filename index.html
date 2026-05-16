@@ -1201,6 +1201,13 @@ async function submitPost() {
   } catch(e) { alert('網路錯誤，無法連線到伺服器\n' + (e.message||'')); }
   submitBtn.disabled=false; submitBtn.textContent='發文';
 }
+function copyWallet() {
+  navigator.clipboard.writeText('liupony2000.x').then(() => {
+    const el = document.getElementById('wallet-copied');
+    el.style.display = 'inline';
+    setTimeout(() => { el.style.display = 'none'; }, 2000);
+  });
+}
 </script>
 
 <div id="lightbox">
@@ -1309,7 +1316,9 @@ async function submitPost() {
   </div>
   <div style="margin-bottom:10px;font-size:0.78rem">
     如果這個網站有幫到你，歡迎打虛擬幣到我的多幣錢包 👇<br>
-    <strong style="color:#7c3aed;font-family:monospace">liupony2000.x</strong>
+    <span id="wallet-addr" onclick="copyWallet()" style="color:#7c3aed;font-family:monospace;cursor:pointer;border-bottom:1px dashed #7c3aed" title="點擊複製">liupony2000.x</span>
+    <span style="font-size:0.72rem;color:#bbb;margin-left:6px">（這真的是錢包地址，點擊複製）</span>
+    <span id="wallet-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span>
   </div>
   <div style="font-size:0.75rem;color:#ccc">Powered by <strong style="color:#f97316">LIU</strong> 🍄</div>
 </footer>
