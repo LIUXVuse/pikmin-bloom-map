@@ -141,6 +141,28 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 .copy-btn:hover { background: #e5e7eb; color: #111; }
 .copy-btn.copied { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
 
+.map-btn {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 4px 0;
+  font-size: 0.72rem;
+  color: #3b82f6;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-align: center;
+}
+.map-btn:hover { background: #dbeafe; color: #1d4ed8; }
+
+.card.highlighted {
+  outline: 3px solid #f97316;
+  box-shadow: 0 0 0 4px rgba(249,115,22,0.25), 0 4px 12px rgba(0,0,0,0.14);
+  transition: outline 0.2s, box-shadow 0.2s;
+}
+
 #pagination {
   display: flex;
   gap: 6px;
@@ -222,6 +244,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 
 <script>
 const SPOTS = """ + spots_json + """;
+SPOTS.forEach((s, i) => { s._id = i; });
 const PAGE_SIZE = 24;
 
 let currentFilter = 'all';
@@ -229,6 +252,8 @@ let currentSearch = '';
 let currentCountry = '';
 let currentPage = 1;
 let clusterGroup = null;
+let lastFiltered = [];
+const markersBySpotId = {};
 
 // 初始化地圖
 const map = L.map('map').setView([23.8, 121.0], 7);
@@ -285,15 +310,16 @@ return result;
 }
 
 function renderMarkers(filtered) {
-  if (clusterGroup) {
-    map.removeLayer(clusterGroup);
-  }
+  if (clusterGroup) map.removeLayer(clusterGroup);
   clusterGroup = L.markerClusterGroup();
+  Object.keys(markersBySpotId).forEach(k => delete markersBySpotId[k]);
 
   filtered.forEach(s => {
     if (s.lat != null && s.lng != null) {
       const m = L.marker([s.lat, s.lng], { icon: makeIcon(s.type) })
         .bindPopup(buildPopup(s));
+      m.on('click', () => scrollToCard(s._id));
+      markersBySpotId[s._id] = m;
       clusterGroup.addLayer(m);
     }
   });
@@ -330,6 +356,7 @@ function renderCards(filtered) {
 
     const card = document.createElement('div');
     card.className = 'card';
+    card.dataset.spotId = s._id;
     card.innerHTML = `
       ${imgHtml}
       <div class="card-body">
@@ -338,6 +365,7 @@ function renderCards(filtered) {
         ${badge}
         <div class="card-coords">${s.lat}, ${s.lng}</div>
         <button class="copy-btn" onclick="copyCoords(this, ${s.lat}, ${s.lng})">📋 複製座標</button>
+        <button class="map-btn" onclick="flyToMarker(${s._id})">🗺️ 在地圖上看</button>
         ${linkHtml}
       </div>`;
     container.appendChild(card);
@@ -398,17 +426,50 @@ function updateCount(total) {
 
 function filterAndRender() {
   currentPage = 1;
-  const filtered = getFiltered();
-  renderMarkers(filtered);
-  renderCards(filtered);
+  lastFiltered = getFiltered();
+  renderMarkers(lastFiltered);
+  renderCards(lastFiltered);
 }
 
 function goToPage(page) {
   currentPage = page;
-  const filtered = getFiltered();
-  renderCards(filtered);
+  renderCards(lastFiltered);
   const cardsTop = document.getElementById('cards-section').offsetTop;
   window.scrollTo({ top: cardsTop, behavior: 'smooth' });
+}
+
+// 卡片 → 地圖：飛到該 marker 並開 popup
+function flyToMarker(spotId) {
+  const s = SPOTS[spotId];
+  if (!s || s.lat == null) return;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const m = markersBySpotId[spotId];
+  if (m) {
+    clusterGroup.zoomToShowLayer(m, () => {
+      map.setView([s.lat, s.lng], Math.max(map.getZoom(), 14));
+      m.openPopup();
+    });
+  } else {
+    map.flyTo([s.lat, s.lng], 14, { duration: 1 });
+  }
+}
+
+// 地圖 → 卡片：切換到對應頁並 highlight
+function scrollToCard(spotId) {
+  const idx = lastFiltered.findIndex(s => s._id === spotId);
+  if (idx === -1) return;
+  const page = Math.floor(idx / PAGE_SIZE) + 1;
+  if (page !== currentPage) {
+    currentPage = page;
+    renderCards(lastFiltered);
+  }
+  setTimeout(() => {
+    const card = document.querySelector(`[data-spot-id="${spotId}"]`);
+    if (!card) return;
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.classList.add('highlighted');
+    setTimeout(() => card.classList.remove('highlighted'), 2000);
+  }, 100);
 }
 
 function setFilter(f) {
