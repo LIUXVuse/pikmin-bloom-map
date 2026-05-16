@@ -87,3 +87,15 @@ push 完 GitHub Pages 自動重新部署。
 - 資料全部內嵌在 index.html，無需資料庫或後端 server
 - 揪隊廣場的貼文存在 Cloudflare D1，Worker 部署在 `pikmin-board.liupony2000.workers.dev`
 - Worker 原始碼在本機：`/Users/liu/Documents/porject/pikmin-board-worker/`，修改後 `wrangler deploy`
+
+---
+
+## 支持作者
+
+Powered by **LIU** 🍄
+
+歡迎加我的皮克敏好友，送我美麗的明信片 🌸
+我的好友代碼：`142744855919`
+
+如果這個網站有幫到你，歡迎打虛擬幣到我的多幣錢包 👇
+**`liupony2000.x`**
