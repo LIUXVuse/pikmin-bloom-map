@@ -323,11 +323,17 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 .my-fc-save { font-size: 0.75rem; padding: 4px 12px; border: none; border-radius: 6px; background: #f59e0b; color: white; cursor: pointer; font-weight: 600; }
 
 /* 範本選擇 */
-.template-section { margin-bottom: 14px; }
+.template-section { margin-bottom: 12px; }
 .template-section-label { font-size: 0.75rem; color: #999; margin-bottom: 6px; }
 .template-chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .template-chip { font-size: 0.75rem; padding: 5px 12px; border: 1.5px solid #e5e7eb; border-radius: 20px; background: white; cursor: pointer; color: #555; transition: all 0.15s; white-space: nowrap; }
 .template-chip:hover { border-color: #f97316; color: #f97316; background: #fff7ed; }
+
+/* 類型快選 */
+.type-section { margin-bottom: 14px; }
+.type-chip { font-size: 0.72rem; padding: 4px 10px; border: 1.5px solid #e5e7eb; border-radius: 20px; background: white; cursor: pointer; color: #666; transition: all 0.15s; white-space: nowrap; }
+.type-chip:hover { border-color: #6366f1; color: #6366f1; background: #eef2ff; }
+.type-chip.selected { border-color: #6366f1; color: white; background: #6366f1; }
 
 /* 好友代碼帶入按鈕 */
 .fc-apply-btn { font-size: 0.72rem; padding: 2px 10px; border: 1px solid #e5e7eb; border-radius: 5px; background: #f9fafb; color: #555; cursor: pointer; margin-top: 4px; }
@@ -1046,6 +1052,81 @@ function renderTemplateChips() {
   });
 }
 
+// ── 菇/花類型快選 ────────────────────────────────────────────────
+const MUSH_TYPES = [
+  { label: '🔥 火菇', tag: '火菇' }, { label: '💧 水菇', tag: '水菇' },
+  { label: '⚡ 電菇', tag: '電菇' }, { label: '🪨 水晶菇', tag: '水晶菇' },
+  { label: '☠️ 毒菇', tag: '毒菇' }, { label: '🎉 活動菇', tag: '活動菇' },
+  { label: '🟣 紫菇', tag: '紫菇' }, { label: '✨ 珍稀菇', tag: '珍稀菇' },
+  { label: '🍄 巨菇', tag: '巨菇' },
+];
+const FLOWER_COLORS = [
+  { label: '🤍 白花', tag: '白花' }, { label: '💛 黃花', tag: '黃花' },
+  { label: '❤️ 紅花', tag: '紅花' }, { label: '💙 藍花', tag: '藍花' },
+  { label: '💜 紫花', tag: '紫花' }, { label: '🩷 粉花', tag: '粉花' },
+  { label: '🩵 冰花', tag: '冰花' },
+];
+const FLOWER_SEEDLINGS = [
+  { label: '🌱 一般花苗', tag: '一般花苗' }, { label: '🌿 大花苗', tag: '大花苗' },
+  { label: '🌟 金色花苗', tag: '金色花苗' }, { label: '🔮 銀色花苗', tag: '銀色花苗' },
+  { label: '🎉 活動花苗', tag: '活動花苗' },
+];
+const MUSH_CATS = new Set(['worker_seek_mushroom', 'pioneer_seek_worker']);
+
+function makeTypeChipGroup(container, types) {
+  types.forEach(t => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'type-chip';
+    btn.textContent = t.label;
+    btn.onclick = () => {
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected');
+        removeTypeTag();
+      } else {
+        document.querySelectorAll('#type-section .type-chip').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        insertTypeTag(t.tag);
+      }
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderTypeChips() {
+  const section = document.getElementById('type-section');
+  const labelEl = document.getElementById('type-section-label');
+  const container = document.getElementById('type-chips');
+  container.innerHTML = '';
+  if (MUSH_CATS.has(boardCategory)) {
+    labelEl.textContent = '🍄 菇的類型（選填，點選加入標題）';
+    makeTypeChipGroup(container, MUSH_TYPES);
+  } else {
+    labelEl.innerHTML = '🌸 花的顏色（選填）';
+    makeTypeChipGroup(container, FLOWER_COLORS);
+    // 花苗第二行
+    const sep = document.createElement('div');
+    sep.style.cssText = 'width:100%;font-size:0.72rem;color:#bbb;margin:6px 0 4px';
+    sep.textContent = '🌱 花苗種類（選填）';
+    container.appendChild(sep);
+    makeTypeChipGroup(container, FLOWER_SEEDLINGS);
+  }
+  section.style.display = 'block';
+}
+
+function insertTypeTag(tag) {
+  const titleEl = document.getElementById('create-title');
+  // 先移除舊的 tag（【...】格式）
+  titleEl.value = titleEl.value.replace(/\u3010[^\u3011]*\u3011/, '').trimEnd();
+  titleEl.value += (titleEl.value ? ' ' : '') + '\u3010' + tag + '\u3011';
+  document.getElementById('create-title-count').textContent = titleEl.value.length + '/100';
+}
+function removeTypeTag() {
+  const titleEl = document.getElementById('create-title');
+  titleEl.value = titleEl.value.replace(/\u3010[^\u3011]*\u3011/, '').trimEnd();
+  document.getElementById('create-title-count').textContent = titleEl.value.length + '/100';
+}
+
 // ── 發文 ─────────────────────────────────────────────────────────
 function openCreatePost() {
   document.getElementById('create-post-form').reset();
@@ -1054,6 +1135,7 @@ function openCreatePost() {
   document.getElementById('create-content-count').textContent='0/2000';
   updateExpiryPreview();
   renderTemplateChips();
+  renderTypeChips();
   renderMyFC();
   document.getElementById('board-post-list').style.display='none';
   document.getElementById('create-post-panel').style.display='flex';
@@ -1144,6 +1226,10 @@ async function submitPost() {
           <div class="template-section">
             <div class="template-section-label">📋 快速範本（點了可修改）</div>
             <div class="template-chips" id="template-chips"></div>
+          </div>
+          <div class="type-section" id="type-section" style="display:none">
+            <div class="template-section-label" id="type-section-label"></div>
+            <div class="template-chips" id="type-chips"></div>
           </div>
           <div class="form-row">
             <label>標題 *</label>
