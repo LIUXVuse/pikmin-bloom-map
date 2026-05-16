@@ -1,6 +1,26 @@
 # 皮克敏明信片座標爬蟲 — 交接說明
 
-## ✅ 本次完成（2026-05-16）
+## ✅ 本次完成（2026-05-16 社群布告欄）
+
+- **CF Workers + D1 後端**
+  - Worker：`https://pikmin-board.liupony2000.workers.dev`
+  - D1：`pikmin-board-db`（id: `db4ad625-7805-4a5d-91b0-21ca8d73009a`，APAC）
+  - 4 API：GET /api/posts、POST /api/posts、DELETE /:id、PATCH /:id/extend
+  - Cron：每天 UTC 02:00 清理過期貼文
+  - Worker 原始碼：`/Users/liu/Documents/porject/pikmin-board-worker/`
+
+- **前端布告欄（toolbar 加 📢 布告欄 按鈕）**
+  - 4 分類 Tab：求菇🍄 / 求打工🌿 / 求花🌸 / 公布花點✨
+  - 貼文預設 5 天到期（最長 30 天），剩 < 24 小時變紅色警示
+  - 發文者 token 存 localStorage，可刪除/延長自己的貼文
+  - 座標欄位可複製、可點「地圖」跳到對應位置
+
+- **座標搜尋**
+  - 搜尋框輸入 `lat, lng` 格式自動偵測
+  - 有收錄點（1km 內）→ 跳卡片 + 地圖 popup
+  - 無收錄點 → 地圖飛過去 + 5 秒臨時準星 marker
+
+## 🔴 下一個對話要先做（高優先）
 
 - **卡片/地圖雙向跳轉連動**（`generate_viewer.py`）
   - 卡片新增「🗺️ 在地圖上看」按鈕 → 捲回頂部、展開 cluster、flyTo 該點並開 popup
@@ -40,10 +60,13 @@
 ## 🔴 下一個對話要先做
 
 - **Step 1：無（目前功能完整，等有新需求再開）**
-  - 可考慮：搜尋框支援座標貼入，自動定位到最近的點
+  - 可考慮：布告欄加貼文搜尋（關鍵字過濾）
   - 可考慮：卡片加入「在 Google Maps 開啟」連結
 
 ## ⚠️ 已知問題 / 注意事項
+
+- **布告欄 CORS**：目前允許 `liuxvuse.github.io` + `localhost:5500`（本地測試）。curl 直打 API 沒有 CORS 限制，但小型社群可接受
+- **Worker 原始碼**在本機 `/Users/liu/Documents/porject/pikmin-board-worker/`，若要修改重跑 `wrangler deploy`
 
 - `auth_state.json` 含 Facebook cookie，**不能上傳 GitHub**（已加 .gitignore）
 - Cookie 有效期約 90 天，過期重跑 `grab_cookies.py`
