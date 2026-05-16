@@ -459,7 +459,11 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
 
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(html)
+    # 同時輸出 index.html，供 GitHub Pages 使用
+    index_path = os.path.join(script_dir, 'index.html')
+    with open(index_path, 'w', encoding='utf-8') as f:
+        f.write(html)
 
-    print(f'✅ viewer.html 已產生，共 {len(spots)} 筆資料，請用瀏覽器開啟')
+    print(f'✅ viewer.html / index.html 已產生，共 {len(spots)} 筆資料')
 
 generate_viewer()
