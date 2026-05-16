@@ -1,8 +1,16 @@
 # 皮克敏明信片座標爬蟲 — 交接說明
 
+## ✅ 本次完成（2026-05-16 收尾）
+
+- **改名**：揪隊廣場 → 🌿 揪團廣場（全域替換）
+- **CORS 修正**：Worker 加入 `null` origin 支援，`file://` 本機直開也能測試發文
+- **清空測試資料**：D1 資料庫 4 筆測試貼文已刪除，等真實用戶
+
+---
+
 ## ✅ 本次完成（2026-05-16）
 
-### 揪隊廣場（社群功能）
+### 揪團廣場（社群功能）
 - **CF Workers + D1 後端**（`/Users/liu/Documents/porject/pikmin-board-worker/`）
   - Worker URL：`https://pikmin-board.liupony2000.workers.dev`
   - D1：`pikmin-board-db`（id: `db4ad625-7805-4a5d-91b0-21ca8d73009a`，APAC）
