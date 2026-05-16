@@ -1015,20 +1015,20 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── 揪團範本 ─────────────────────────────────────────────────────
 const TEMPLATES = {
   worker_seek_mushroom: [
-    { label: '求打工人 💪', title: '求打工人！有菇快來飛', content: '菇點出現了！誠徵打工人飛過來一起打，人多力量大 🍄\\n加好友後跟我說一聲，時間到一起開打！\\n好友代碼如下 👇' },
-    { label: '招募打菇隊 🍄', title: '【求打工】今日有菇，招募打菇隊', content: '今天有菇點，需要打工人一起來飛！\\n歡迎加好友，我有菇就發邀請，你有空就飛來 🙌\\n好友代碼如下 👇' },
+    { label: '求菇 🍄', title: '求菇！有空可以立刻飛', content: '現在有空，可以立刻飛過去打菇！\\n有菇的先驅請加好友，我看到通知馬上過去 🍄\\n好友代碼如下 👇' },
+    { label: '想打工 💪', title: '想找菇打！求先驅帶', content: '在找菇點，有菇的歡迎揪我一起打！\\n加好友後直接邀請，有空的話秒接 💪\\n好友代碼如下 👇' },
   ],
   pioneer_seek_worker: [
-    { label: '開荒求打工 🌿', title: '開荒中，求穩定打工人長期合作', content: '我常在這區跑，菇點不少，需要穩定打工人！\\n我負責找菇點、發邀請，你負責飛來打 💪\\n加好友後我有菇就通知你 🌿' },
-    { label: '招募長期夥伴', title: '招募打菇夥伴，我有菇就叫你', content: '誠徵長期打工夥伴！有菇我就發邀，人到就開打。\\n加好友後互通有無，一起衝菇量 🍄\\n好友代碼如下 👇' },
+    { label: '有菇求打工 🍄', title: '有菇！求打工人快來', content: '菇點就位，急徵打工人！\\n現在就可以打，人夠了馬上開始 🍄\\n加好友後我發邀請，快來！\\n好友代碼如下 👇' },
+    { label: '招打工人 💪', title: '求打工人，菇點開放中', content: '有菇，缺人手！\\n歡迎加好友一起打，打完就解散 🙌\\n好友代碼如下 👇' },
   ],
   flower_seek_flower: [
-    { label: '求花點座標 🌸', title: '求花點座標分享，感謝！', content: '想採花但不知道哪裡花況好 🌸\\n請問有人可以分享附近好花點的座標嗎？\\n或是有花友想一起去採的也歡迎揪！' },
-    { label: '找花友同行 🌷', title: '找花友一起種花採花', content: '想找花友一起行動，種花採花更有效率！\\n有好花點或想一起去的，加好友一起出發 🌷\\n好友代碼如下 👇' },
+    { label: '求花點 🌸', title: '求好花點座標，感謝分享！', content: '在找花況好的地方，有好花點的朋友可以分享嗎？🌸\\n附近想採花的也可以揪我一起行動！\\n好友代碼如下 👇' },
+    { label: '找花友 🌷', title: '找人一起採花！', content: '想找花友一起去採花，有好地點一起去效率更高！\\n有花點或想揪伴的歡迎加好友 🌷\\n好友代碼如下 👇' },
   ],
   god_announce_flower: [
-    { label: '分享花點 🌸', title: '花點分享 🌸 歡迎來採', content: '分享一個超棒的花點！花況很好，歡迎飛過來採花 🌷\\n座標如上，不用打招呼直接加好友來就好！\\n有問題歡迎留言 ✨' },
-    { label: '花海開放 ✨', title: '【花點】這裡花況超讚，隨時歡迎來', content: '推薦這個地點，花很多很密！\\n隨時歡迎飛過來採，不用事先通知 🌸\\n座標如上，好友代碼如下 👇' },
+    { label: '分享花點 🌸', title: '花點分享！花況很好歡迎來採', content: '分享一個不錯的花點，花很多！\\n座標如上，歡迎加好友飛過來採 🌷\\n不用打招呼直接加就好 ✨' },
+    { label: '公布花海 🌊', title: '這裡花超多！座標公布', content: '強推這個地點，花況超讚！\\n隨時歡迎來採，花多到採不完 🌸\\n座標如上，有問題歡迎留言 🙌' },
   ],
 };
 function applyTemplate(idx) {
@@ -1223,25 +1223,15 @@ async function submitPost() {
           <button class="board-close" onclick="closeCreatePost()">✕</button>
         </div>
         <form id="create-post-form" onsubmit="return false">
-          <div class="template-section">
-            <div class="template-section-label">📋 快速範本（點了可修改）</div>
-            <div class="template-chips" id="template-chips"></div>
-          </div>
-          <div class="type-section" id="type-section" style="display:none">
-            <div class="template-section-label" id="type-section-label"></div>
-            <div class="template-chips" id="type-chips"></div>
-          </div>
           <div class="form-row">
             <label>標題 *</label>
             <input id="create-title" type="text" maxlength="100" placeholder="簡短說明你的需求"
               oninput="document.getElementById('create-title-count').textContent=this.value.length+'/100'">
             <div class="char-count"><span id="create-title-count">0/100</span></div>
           </div>
-          <div class="form-row">
-            <label>內容 *</label>
-            <textarea id="create-content" maxlength="2000" placeholder="詳細說明、時間、需求…（預設 5 天後自動刪除）"
-              oninput="document.getElementById('create-content-count').textContent=this.value.length+'/2000'"></textarea>
-            <div class="char-count"><span id="create-content-count">0/2000</span></div>
+          <div class="type-section" id="type-section" style="display:none">
+            <div class="template-section-label" id="type-section-label"></div>
+            <div class="template-chips" id="type-chips"></div>
           </div>
           <div class="form-row">
             <label>好友代碼（選填）</label>
@@ -1252,6 +1242,16 @@ async function submitPost() {
             <label>座標（選填）</label>
             <input id="create-coord" type="text" maxlength="40" placeholder="例：25.04, 121.55">
             <div class="form-hint">可從搜尋框輸入座標後複製貼上</div>
+          </div>
+          <div class="template-section">
+            <div class="template-section-label">📋 快速範本（點了可修改）</div>
+            <div class="template-chips" id="template-chips"></div>
+          </div>
+          <div class="form-row">
+            <label>內容 *</label>
+            <textarea id="create-content" maxlength="2000" placeholder="詳細說明、時間、需求…（預設 5 天後自動刪除）"
+              oninput="document.getElementById('create-content-count').textContent=this.value.length+'/2000'"></textarea>
+            <div class="char-count"><span id="create-content-count">0/2000</span></div>
           </div>
           <div class="form-row">
             <label>有效時間（小時）</label>
