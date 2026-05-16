@@ -1,22 +1,28 @@
 # 皮克敏明信片座標爬蟲 — 交接說明
 
-## ✅ 本次完成（2026-05-16 最新）
+## ✅ 本次完成（2026-05-16）
 
-- **花類型 chip 拆分**：`FLOWER_TYPES`（混合）→ `FLOWER_COLORS`（7 色）+ `FLOWER_SEEDLINGS`（5 種花苗），發文表單求花/公布花點分兩組顯示
-  - 花的顏色：白花/黃花/紅花/藍花/紫花/粉花/冰花
-  - 花苗種類：一般花苗/大花苗/金色花苗/銀色花苗/活動花苗
+- **發文表單順序重排**：快速範本/類型 chip 移到後面，新順序為「標題 → 好友代碼 → 座標 → 快速範本 → 內容」
+- **快速範本更新**：全部改為短期用語，移除「長期」「穩定」等措辭；各分類（求菇/求打工/求花/花點公布）有獨立對應範本
+- **發文成功 UX 修正**：成功後在貼文列表區顯示明顯綠色大型 banner，loadBoardPosts 延遲 600ms 執行避免 D1 寫入延遲
+- **切 Tab 不關面板 bug 修正**：切換分類 Tab 時如果發文面板是開的，即時更新標題、範本、類型 chip，不再需要先按 X 再重開
+- **發文按鈕文字**：「✏️ 發文」→「✏️ 我要發文」
+- **頁面 footer 新增**：Powered by LIU、感謝臉書社群、好友代碼 142744855919、捐款錢包 liupony2000.x
+- **generate_viewer.py 同步**：所有上述改動都同步寫入，避免下次跑腳本覆蓋
+- **README.md 更新**：底部加入支持作者區塊
 
 ---
 
-## ✅ 本次完成（2026-05-16 收尾）
+## ✅ 本次完成（2026-05-16 先前）
 
+- **花類型 chip 拆分**：`FLOWER_TYPES`（混合）→ `FLOWER_COLORS`（7 色）+ `FLOWER_SEEDLINGS`（5 種花苗）
 - **改名**：揪隊廣場 → 🌿 揪團廣場（全域替換）
 - **CORS 修正**：Worker 加入 `null` origin 支援，`file://` 本機直開也能測試發文
-- **清空測試資料**：D1 資料庫 4 筆測試貼文已刪除，等真實用戶
+- **清空測試資料**：D1 資料庫測試貼文已刪除
 
 ---
 
-## ✅ 本次完成（2026-05-16）
+## ✅ 先前完成（2026-05-16 更早）
 
 ### 揪團廣場（社群功能）
 - **CF Workers + D1 後端**（`/Users/liu/Documents/porject/pikmin-board-worker/`）
@@ -24,52 +30,29 @@
   - D1：`pikmin-board-db`（id: `db4ad625-7805-4a5d-91b0-21ca8d73009a`，APAC）
   - 4 API：GET /api/posts、POST /api/posts、DELETE /:id、PATCH /:id/extend
   - Cron：每天 UTC 02:00（台灣時間 10:00）清理過期貼文
-  - 發文 token 用 SHA-256 hash 存 D1，明文只回傳一次給前端存 localStorage
-- **前端：🌿 揪隊廣場**（toolbar 按鈕）
-  - 4 分類 Tab：求菇🍄 / 求打工🌿 / 求花🌸 / 公布花點✨
-  - 貼文預設 120 小時（5 天）到期，最長 720 小時（30 天）
-  - 剩 < 24 小時 → 紅色警示 pill
-  - 發文 modal：漸層 header、大型輸入框、橘色發文按鈕
-  - 自己的貼文：刪除（二次確認）、延長到期時間
-  - 座標欄位：複製按鈕 + 「地圖」跳到地圖定位
 
 ### 前端新功能
-- **座標搜尋**：搜尋框輸入 `lat, lng` 自動偵測
-  - 1km 內有收錄點 → 跳卡片 + 地圖 popup
-  - 無收錄點 → 地圖飛過去 + 5 秒臨時準星 marker
-- **❤️ 收藏**：每張卡片可收藏，localStorage 持久化，再按一次篩選按鈕回全部
-- **🎲 隨機**：從目前篩選結果隨機跳一個點（地圖 + 卡片）
-- **地圖收合**：手機/平板（≤768px）預設收起，可點展開；桌機預設展開
-- **分頁升級**：當前頁前後各 3 頁可見 + 右側跳頁輸入框
-
----
-
-## ✅ 上次完成（2026-05-16 先前對話）
-
+- 座標搜尋、❤️ 收藏、🎲 隨機、地圖收合、分頁升級
 - 卡片/地圖雙向跳轉連動
-- 地圖 popup 加複製座標與看大圖
-- 卡片加「在地圖上看」跳轉按鈕
 
 ---
 
 ## 🔴 下一個對話要先做
 
-- **Step 1：無（功能完整，等新需求）**
-  - 可考慮：揪團廣場加關鍵字搜尋（目前只能切 Tab）
-  - 可考慮：卡片加「在 Google Maps 開啟」連結
-  - 可考慮：Worker 加 rate limiting（防濫發貼文）
-  - 可考慮：菇點 chip 也進一步細分（目前已有元素菇/活動菇等 9 類）
+- **Step 1：觀察揪團廣場真實使用狀況**，確認發文/瀏覽流程沒有問題
+- **可考慮**：揪團廣場加關鍵字搜尋（目前只能切 Tab）
+- **可考慮**：Worker 加 rate limiting（防濫發貼文）
+- **可考慮**：卡片加「在 Google Maps 開啟」連結
 
 ---
 
 ## ⚠️ 已知問題 / 注意事項
 
-- **揪隊廣場 CORS**：允許 `liuxvuse.github.io` + `localhost:5500`。本地用 `file://` 開 index.html 會 CORS 失敗（正常，用 `python3 -m http.server` 或直接看 GitHub Pages）
+- **揪隊廣場 CORS**：允許 `liuxvuse.github.io` + `localhost:5500` + `null`（file://）
 - **Worker 原始碼在本機**：`/Users/liu/Documents/porject/pikmin-board-worker/`，修改後需重跑 `wrangler deploy`
 - `auth_state.json` 含 Facebook cookie，**不能上傳 GitHub**（已加 .gitignore）
 - Cookie 有效期約 90 天，過期重跑 `grab_cookies.py`
 - Facebook CDN 圖片 URL 含過期 token（`oe=` 參數），現抓的約 2026 年 11 月失效
-- Facebook 改版可能導致 dialog selector 失效，需調整 `scrape.py`
 
 ---
 
@@ -120,7 +103,7 @@
 }
 ```
 
-## D1 資料表（揪隊廣場）
+## D1 資料表（揪團廣場）
 
 ```sql
 posts (id TEXT PK, category TEXT, title TEXT, content TEXT,
