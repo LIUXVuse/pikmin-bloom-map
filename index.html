@@ -428,13 +428,21 @@ if (clusterGroup && clusterGroup.getLayers().length > 0) {
   map.fitBounds(clusterGroup.getBounds().pad(0.1));
 }
 
-// 燈箱
-const lb = document.getElementById('lightbox');
-const lbImg = document.getElementById('lightbox-img');
-function openLightbox(src) { lbImg.src = src; lb.classList.add('open'); }
-function closeLightbox() { lb.classList.remove('open'); lbImg.src = ''; }
-lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+// 燈箱（DOM 載入後才綁定，避免元素還不存在）
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lightbox-img').src = '';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('lightbox').addEventListener('click', e => {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+});
 </script>
 
 <div id="lightbox">
