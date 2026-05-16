@@ -6,30 +6,33 @@
   - Playwright + Chrome cookie 登入（`grab_cookies.py`）
   - 策略：收集貼文連結 → 逐篇進 dialog 抓座標
   - 每 10 筆自動存檔，支援 `--full` 全抓 / 增量模式
-- 首次全抓：1230 篇貼文 → 644 筆有座標
+- 首次全抓：1230 篇貼文 → 649 筆有座標
 - 座標反查國家（`enrich.py`）：70 個國家全中文名稱
 - WebUI（`generate_viewer.py` → `viewer.html` + `index.html`）
   - Leaflet + MarkerCluster 聚合地圖
   - 搜尋、菇點/花點篩選、國家下拉、排序、分頁（24筆/頁）
-  - 卡片圖片點擊放大（燈箱）
-  - 修復燈箱點擊無反應（JS DOM 執行順序問題）
+  - 卡片圖片點擊放大（燈箱）— 修復 JS DOM 執行順序 bug
 - 部署到 GitHub Pages：https://liuxvuse.github.io/pikmin-bloom-map/
-  - `generate_viewer.py` 同時輸出 `index.html` 供 Pages 使用
-  - 每次 push 自動重新部署，無需資料庫
+- 每天早上 8:00 cron 自動增量抓取 + commit + push（`update.sh`）
+- SSH key 永久存放：`~/.ssh/pikmin_bloom_key`
 
 ## 🔴 下一個對話要先做
 
-- Step 1：確認 GitHub Pages 已啟用（repo settings → Pages → main / root）
-- Step 2：驗證線上版圖片放大功能正常（Facebook CDN 圖片跨域可能有問題）
-- Step 3（選做）：改善地點名稱品質，從 hashtag 抽更具體地名（目前很多是「皮克敏」）
+- **Step 1：手機 / 平板 RWD 適配**（最高優先）
+  - 目前工具列在手機上擠在一行，篩選按鈕會溢出
+  - 地圖高度在手機上太矮
+  - 卡片 200px 固定寬在手機上每排只能放 1～2 張，要調整
+  - 建議：工具列改成兩行（手機），卡片改用 `grid` 自動適配欄數，地圖高度響應式
+  - 修改 `generate_viewer.py` 裡的 CSS，重新產生 `index.html` 後 push
 
 ## ⚠️ 已知問題 / 注意事項
 
 - `auth_state.json` 含 Facebook cookie，**不能上傳 GitHub**（已加 .gitignore）
 - Cookie 有效期約 90 天，過期重跑 `grab_cookies.py`
-- Facebook CDN 圖片有時效性（幾天到幾週），放大功能若無效是 FB 防盜鏈問題
+- Facebook CDN 圖片 URL 含過期 token（`oe=` 參數），現抓的約 2026 年 11 月失效
 - Facebook 改版可能導致 dialog selector 失效，需調整 `scrape.py`
-- 地點名稱品質不均：有寫地名才抓得到，否則顯示「皮克敏」
+- 地點名稱品質不均：有些只顯示「皮克敏」（貼文本身沒寫地名）
+- GitHub Pages 已設定，但需確認 repo settings → Pages 已啟用
 
 ## 快速參考
 
@@ -38,24 +41,25 @@
 | `python grab_cookies.py` | 從 Chrome 抓 FB cookie（第一次或過期時） |
 | `python scrape.py` | 增量抓取（只抓新貼文） |
 | `python scrape.py --full` | 全抓歷史貼文 |
-| `python scrape.py --download-images` | 同時下載示意圖到 images/ |
-| `python enrich.py` | 座標反查國家，更新 spots.json |
+| `python enrich.py` | 座標反查國家寫回 spots.json |
 | `python generate_viewer.py` | 產生 viewer.html + index.html |
+| `bash update.sh` | 手動跑完整更新流程（等同每日自動排程） |
 
-**每次更新完整流程：**
+**每次手動更新：**
 ```bash
-python scrape.py
-python enrich.py
-python generate_viewer.py
-git add spots.json index.html viewer.html
-git commit -m "[data] 更新座標資料"
-git push
+bash update.sh
+```
+
+**每日 08:00 自動執行，log 在：**
+```
+/Users/liu/Documents/porject/pikmin-scraper/update.log
 ```
 
 ## GitHub
 
 - Repo：https://github.com/LIUXVuse/pikmin-bloom-map
 - Pages：https://liuxvuse.github.io/pikmin-bloom-map/
+- SSH key：`~/.ssh/pikmin_bloom_key`（push 用）
 
 ## 資料格式（spots.json）
 

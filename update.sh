@@ -1,0 +1,40 @@
+#!/bin/bash
+# 皮克敏地圖每日自動更新腳本
+# cron 會跑，所以用絕對路徑
+
+PROJECT="/Users/liu/Documents/porject/pikmin-scraper"
+PYTHON="$PROJECT/venv/bin/python3"
+GIT="/usr/bin/git"
+SSH_KEY="$HOME/.ssh/pikmin_bloom_key"
+LOG="$PROJECT/update.log"
+
+cd "$PROJECT" || exit 1
+
+echo "========== $(date '+%Y-%m-%d %H:%M:%S') ==========" >> "$LOG"
+
+# 抓新貼文
+echo "[1/3] 抓取新貼文..." >> "$LOG"
+$PYTHON scrape.py >> "$LOG" 2>&1
+
+# 反查國家
+echo "[2/3] 更新國家資訊..." >> "$LOG"
+$PYTHON enrich.py >> "$LOG" 2>&1
+
+# 產生地圖
+echo "[3/3] 產生地圖..." >> "$LOG"
+$PYTHON generate_viewer.py >> "$LOG" 2>&1
+
+# 檢查有沒有變動
+if $GIT diff --quiet spots.json index.html viewer.html; then
+    echo "✅ 無新資料，跳過 commit" >> "$LOG"
+    exit 0
+fi
+
+# commit + push
+TODAY=$(date '+%Y-%m-%d')
+$GIT add spots.json index.html viewer.html enrich.py
+$GIT commit -m "[auto] 每日更新 $TODAY" >> "$LOG" 2>&1
+GIT_SSH_COMMAND="ssh -i $SSH_KEY -o StrictHostKeyChecking=no" \
+    $GIT push origin main >> "$LOG" 2>&1
+
+echo "✅ 更新完成" >> "$LOG"
