@@ -823,7 +823,14 @@ function switchBoardTab(category) {
   boardCategory = category;
   boardPage = 1;
   document.querySelectorAll('.board-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === category));
-  loadBoardPosts();
+  // 如果發文面板是開著的，重新渲染對應分類的內容
+  if (document.getElementById('create-post-panel').style.display === 'flex') {
+    document.getElementById('create-category-label').textContent = CATEGORY_MAP[boardCategory].label;
+    renderTemplateChips();
+    renderTypeChips();
+  } else {
+    loadBoardPosts();
+  }
 }
 async function loadBoardPosts() {
   const list = document.getElementById('board-post-list');
