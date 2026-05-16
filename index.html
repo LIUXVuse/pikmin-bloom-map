@@ -56,6 +56,27 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 
 #count { font-size: 0.82rem; color: #888; margin-left: auto; white-space: nowrap; }
 
+#map-wrap { position: relative; }
+#map-toggle {
+  position: absolute; top: 8px; right: 8px; z-index: 999;
+  padding: 4px 12px; font-size: 0.75rem; background: white;
+  border: 1px solid #ddd; border-radius: 12px; cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15); color: #555;
+  transition: background 0.15s;
+}
+#map-toggle:hover { background: #f3f4f6; }
+#map.collapsed { height: 0 !important; min-height: 0 !important; overflow: hidden; }
+
+.fav-btn {
+  display: block; width: 100%; margin-top: 4px; padding: 4px 0;
+  font-size: 0.72rem; color: #be185d; background: #fdf2f8;
+  border: 1px solid #fbcfe8; border-radius: 6px; cursor: pointer;
+  transition: background 0.15s; text-align: center;
+}
+.fav-btn:hover { background: #fce7f3; }
+.fav-btn.saved { background: #fce7f3; color: #9d174d; border-color: #f9a8d4; }
+.filter-btn.active-fav { background: #ec4899; color: white; border-color: #ec4899; }
+
 #map { height: 50vh; min-height: 300px; }
 
 #cards-section { background: #f5f5f5; }
@@ -279,11 +300,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 .form-row { margin-bottom: 12px; }
 .form-row label { display: block; font-size: 0.78rem; font-weight: 600; color: #555; margin-bottom: 4px; }
 .form-row input, .form-row textarea {
-  width: 100%; border: 1px solid #e5e7eb; border-radius: 7px; padding: 7px 10px;
-  font-size: 0.83rem; outline: none; font-family: inherit; transition: border-color 0.15s;
+  width: 100%; border: 1px solid #e5e7eb; border-radius: 7px; padding: 10px 12px;
+  font-size: 0.9rem; outline: none; font-family: inherit; transition: border-color 0.15s;
 }
 .form-row input:focus, .form-row textarea:focus { border-color: #f97316; }
-.form-row textarea { resize: vertical; min-height: 80px; }
+.form-row textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .char-count { font-size: 0.7rem; color: #aaa; text-align: right; margin-top: 2px; }
 .expiry-preview { font-size: 0.73rem; color: #888; margin-top: 3px; }
 .form-hint { font-size: 0.72rem; color: #aaa; margin-top: 3px; }
@@ -309,11 +330,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
   <select id="country" onchange="onCountry()" style="border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-size:0.82rem;outline:none;cursor:pointer;background:white;max-width:160px;">
     <option value="">🌍 全部國家</option>
   </select>
+  <button class="filter-btn" data-filter="fav" onclick="setFilter('fav')">❤️ 收藏</button>
+  <button class="filter-btn" onclick="randomSpot()" style="white-space:nowrap">🎲 隨機</button>
   <button class="filter-btn" onclick="openBoardModal()" style="white-space:nowrap">📢 布告欄</button>
 <span id="count"></span>
 </div>
 
-<div id="map"></div>
+<div id="map-wrap">
+  <div id="map"></div>
+  <button id="map-toggle" onclick="toggleMap()">▲ 收起地圖</button>
+</div>
 
 <div id="cards-section">
   <div id="cards"></div>
@@ -364,12 +390,12 @@ function buildPopup(s) {
 function getFiltered() {
   let result = SPOTS.slice();
 
-  // type filter
-  if (currentFilter !== 'all') {
+  if (currentFilter === 'fav') {
+    result = result.filter(s => favSet.has(s._id));
+  } else if (currentFilter !== 'all') {
     result = result.filter(s => s.type === currentFilter);
   }
 
-  // search filter
   if (currentSearch) {
     const q = currentSearch.toLowerCase();
     result = result.filter(s =>
@@ -379,12 +405,11 @@ function getFiltered() {
     );
   }
 
-  // country filter
   if (currentCountry !== '') {
     result = result.filter(s => s.country === currentCountry);
   }
 
-return result;
+  return result;
 }
 
 function renderMarkers(filtered) {
@@ -432,6 +457,7 @@ function renderCards(filtered) {
     const nameEsc = (s.name || '未命名').replace(/</g, '&lt;');
     const authorEsc = (s.author || '未知').replace(/</g, '&lt;');
 
+    const isFav = favSet.has(s._id);
     const card = document.createElement('div');
     card.className = 'card';
     card.dataset.spotId = s._id;
@@ -444,6 +470,7 @@ function renderCards(filtered) {
         <div class="card-coords">${s.lat}, ${s.lng}</div>
         <button class="copy-btn" onclick="copyCoords(this, ${s.lat}, ${s.lng})">📋 複製座標</button>
         <button class="map-btn" onclick="flyToMarker(${s._id})">🗺️ 在地圖上看</button>
+        <button class="fav-btn${isFav?' saved':''}" onclick="toggleFav(${s._id}, this)">${isFav?'❤️ 已收藏':'🤍 加入收藏'}</button>
         ${linkHtml}
       </div>`;
     container.appendChild(card);
@@ -466,35 +493,59 @@ function renderPagination(total, totalPages) {
     if (!disabled) btn.onclick = () => goToPage(page);
     return btn;
   };
+  const mkDots = () => {
+    const s = document.createElement('span');
+    s.textContent = '…';
+    s.style.cssText = 'padding:4px 2px;font-size:0.82rem;color:#aaa;align-self:center';
+    return s;
+  };
 
   el.appendChild(mkBtn('上一頁', currentPage - 1, currentPage === 1, false));
 
-  // 顯示頁碼：最多顯示 7 個，中間用 ...
+  // 顯示頁碼：首尾固定，當前頁前後各 3 頁
+  const WING = 3;
   let pages = [];
-  if (totalPages <= 7) {
+  if (totalPages <= WING * 2 + 3) {
     for (let i = 1; i <= totalPages; i++) pages.push(i);
   } else {
-    pages = [1];
-    if (currentPage > 3) pages.push('...');
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-      pages.push(i);
-    }
-    if (currentPage < totalPages - 2) pages.push('...');
+    const left = Math.max(2, currentPage - WING);
+    const right = Math.min(totalPages - 1, currentPage + WING);
+    pages.push(1);
+    if (left > 2) pages.push('...');
+    for (let i = left; i <= right; i++) pages.push(i);
+    if (right < totalPages - 1) pages.push('...');
     pages.push(totalPages);
   }
 
   pages.forEach(p => {
-    if (p === '...') {
-      const span = document.createElement('span');
-      span.textContent = '...';
-      span.style.cssText = 'padding:4px 4px;font-size:0.82rem;color:#888;align-self:center';
-      el.appendChild(span);
-    } else {
-      el.appendChild(mkBtn(p, p, false, p === currentPage));
-    }
+    el.appendChild(p === '...' ? mkDots() : mkBtn(p, p, false, p === currentPage));
   });
 
   el.appendChild(mkBtn('下一頁', currentPage + 1, currentPage === totalPages, false));
+
+  // 跳頁輸入框
+  const jumpWrap = document.createElement('span');
+  jumpWrap.style.cssText = 'display:flex;align-items:center;gap:4px;margin-left:6px;font-size:0.8rem;color:#666';
+  const jumpInput = document.createElement('input');
+  jumpInput.type = 'number'; jumpInput.min = 1; jumpInput.max = totalPages;
+  jumpInput.placeholder = '頁';
+  jumpInput.style.cssText = 'width:46px;border:1px solid #ddd;border-radius:6px;padding:3px 6px;font-size:0.8rem;outline:none;text-align:center';
+  jumpInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const p = parseInt(jumpInput.value);
+      if (p >= 1 && p <= totalPages) goToPage(p);
+    }
+  });
+  const jumpBtn = document.createElement('button');
+  jumpBtn.className = 'page-btn';
+  jumpBtn.textContent = '跳';
+  jumpBtn.onclick = () => {
+    const p = parseInt(jumpInput.value);
+    if (p >= 1 && p <= totalPages) goToPage(p);
+  };
+  jumpWrap.appendChild(jumpInput);
+  jumpWrap.appendChild(jumpBtn);
+  el.appendChild(jumpWrap);
 }
 
 function updateCount(total) {
@@ -552,12 +603,52 @@ function scrollToCard(spotId) {
 
 function setFilter(f) {
   currentFilter = f;
-  const activeClass = { all: 'active-all', '菇點': 'active-mush', '花點': 'active-flow' };
+  const activeClass = { all: 'active-all', '菇點': 'active-mush', '花點': 'active-flow', fav: 'active-fav' };
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.className = 'filter-btn';
     if (btn.dataset.filter === f) btn.classList.add(activeClass[f]);
   });
   filterAndRender();
+}
+
+// ── 收藏 ─────────────────────────────────────────────────────────
+let favSet = new Set(JSON.parse(localStorage.getItem('pikmin_favs') || '[]'));
+function saveFavs() { localStorage.setItem('pikmin_favs', JSON.stringify([...favSet])); }
+function toggleFav(spotId, btn) {
+  if (favSet.has(spotId)) {
+    favSet.delete(spotId);
+    btn.textContent = '🤍 加入收藏'; btn.classList.remove('saved');
+  } else {
+    favSet.add(spotId);
+    btn.textContent = '❤️ 已收藏'; btn.classList.add('saved');
+  }
+  saveFavs();
+  if (currentFilter === 'fav') filterAndRender();
+}
+
+// ── 隨機跳點 ─────────────────────────────────────────────────────
+function randomSpot() {
+  if (!lastFiltered.length) return;
+  const s = lastFiltered[Math.floor(Math.random() * lastFiltered.length)];
+  flyToMarker(s._id);
+  scrollToCard(s._id);
+}
+
+// ── 地圖收合 ─────────────────────────────────────────────────────
+let mapVisible = true;
+function toggleMap() {
+  mapVisible = !mapVisible;
+  const mapEl = document.getElementById('map');
+  const btn = document.getElementById('map-toggle');
+  mapEl.classList.toggle('collapsed', !mapVisible);
+  btn.textContent = mapVisible ? '▲ 收起地圖' : '▼ 展開地圖';
+  if (mapVisible) setTimeout(() => map.invalidateSize(), 50);
+}
+// 手機預設收起地圖
+if (window.innerWidth <= 768) {
+  mapVisible = false;
+  document.getElementById('map').classList.add('collapsed');
+  document.getElementById('map-toggle').textContent = '▼ 展開地圖';
 }
 
 function onSearch() {
