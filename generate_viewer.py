@@ -1356,14 +1356,17 @@ function copyJKOAccount() {
     <span id="wallet-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span>
   </div>
   <div style="margin-bottom:16px">
-    <div style="display:inline-flex;align-items:center;gap:16px;background:#fff5f5;border:1px solid #fecaca;border-radius:12px;padding:14px 20px">
-      <img src="jko_qr.jpg" alt="街口支付 QR Code" style="width:100px;border-radius:6px;flex-shrink:0">
-      <div style="text-align:left;font-size:0.8rem;color:#555;line-height:2">
-        <div style="font-weight:700;color:#e8000d;margin-bottom:4px">街口支付抖內 ☕</div>
-        <div>街口代碼：<span onclick="copyJKOCode()" style="color:#e8000d;font-family:monospace;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">396</span>
-          <span id="jko-code-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:4px">✅</span></div>
-        <div>街口帳號：<span onclick="copyJKOAccount()" style="color:#e8000d;font-family:monospace;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">901238319</span>
-          <span id="jko-account-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:4px">✅</span></div>
+    <div style="display:inline-flex;align-items:center;gap:28px;background:#fff5f5;border:1px solid #fecaca;border-radius:14px;padding:20px 32px">
+      <div style="flex-shrink:0;text-align:center">
+        <img src="jko_qr.jpg" alt="街口支付 QR Code" onclick="openLightbox(this.src)" style="width:130px;border-radius:8px;cursor:zoom-in" title="點擊放大">
+        <div style="margin-top:6px"><a href="jko_qr.jpg" download="街口支付QR.jpg" style="font-size:0.72rem;color:#e8000d;text-decoration:none">⬇ 下載 QR</a></div>
+      </div>
+      <div style="text-align:left;font-size:0.85rem;color:#555;line-height:2.2">
+        <div style="font-weight:700;color:#e8000d;font-size:0.95rem;margin-bottom:6px">街口支付抖內 ☕</div>
+        <div>街口代碼：<span onclick="copyJKOCode()" style="color:#e8000d;font-family:monospace;font-size:1rem;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">396</span>
+          <span id="jko-code-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span></div>
+        <div>街口帳號：<span onclick="copyJKOAccount()" style="color:#e8000d;font-family:monospace;font-size:1rem;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">901238319</span>
+          <span id="jko-account-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span></div>
       </div>
     </div>
   </div>
