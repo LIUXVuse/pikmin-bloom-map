@@ -1355,14 +1355,17 @@ function copyJKOAccount() {
     <span style="font-size:0.72rem;color:#bbb;margin-left:6px">（這真的是錢包地址，點擊複製）</span>
     <span id="wallet-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span>
   </div>
-  <div style="margin-bottom:16px;font-size:0.78rem">
-    或用街口支付抖內 ☕<br>
-    街口代碼：<span onclick="copyJKOCode()" style="color:#e8000d;font-family:monospace;font-size:0.95rem;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">396</span>
-    <span id="jko-code-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span>
-    &nbsp;／&nbsp;
-    街口帳號：<span onclick="copyJKOAccount()" style="color:#e8000d;font-family:monospace;font-size:0.95rem;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">901238319</span>
-    <span id="jko-account-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span><br>
-    <img src="jko_qr.jpg" alt="街口支付 QR Code" style="width:160px;margin-top:10px;border-radius:8px;border:1px solid #eee">
+  <div style="margin-bottom:16px">
+    <div style="display:inline-flex;align-items:center;gap:16px;background:#fff5f5;border:1px solid #fecaca;border-radius:12px;padding:14px 20px">
+      <img src="jko_qr.jpg" alt="街口支付 QR Code" style="width:100px;border-radius:6px;flex-shrink:0">
+      <div style="text-align:left;font-size:0.8rem;color:#555;line-height:2">
+        <div style="font-weight:700;color:#e8000d;margin-bottom:4px">街口支付抖內 ☕</div>
+        <div>街口代碼：<span onclick="copyJKOCode()" style="color:#e8000d;font-family:monospace;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">396</span>
+          <span id="jko-code-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:4px">✅</span></div>
+        <div>街口帳號：<span onclick="copyJKOAccount()" style="color:#e8000d;font-family:monospace;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">901238319</span>
+          <span id="jko-account-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:4px">✅</span></div>
+      </div>
+    </div>
   </div>
   <div style="font-size:0.75rem;color:#ccc">Powered by <strong style="color:#f97316">LIU</strong> 🍄</div>
 </footer>
