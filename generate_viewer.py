@@ -1485,7 +1485,7 @@ function copyJKOAccount() {
        style="display:block;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;padding:11px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.9rem;margin-bottom:10px">
       ⬇️ 下載橋接程式（Windows .exe）
     </a>
-    <p style="font-size:0.75rem;color:#9ca3af;margin:0">下載後請以管理員身份執行</p>
+    <p style="font-size:0.75rem;color:#9ca3af;margin:0">下載後請以管理員身份執行<br>無毒但請謹慎使用，墜機是有可能發生的！</p>
   </div>
 </div>
 
