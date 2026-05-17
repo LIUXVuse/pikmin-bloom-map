@@ -13,16 +13,19 @@ cd "$PROJECT" || exit 1
 echo "========== $(date '+%Y-%m-%d %H:%M:%S') ==========" >> "$LOG"
 
 # 抓新貼文
-echo "[1/3] 抓取新貼文..." >> "$LOG"
+echo "[$(date '+%H:%M:%S')] [1/3] 抓取新貼文..." >> "$LOG"
 $PYTHON scrape.py >> "$LOG" 2>&1
+echo "[$(date '+%H:%M:%S')] [1/3] 抓取完成" >> "$LOG"
 
 # 反查國家
-echo "[2/3] 更新國家資訊..." >> "$LOG"
+echo "[$(date '+%H:%M:%S')] [2/3] 更新國家資訊..." >> "$LOG"
 $PYTHON enrich.py >> "$LOG" 2>&1
+echo "[$(date '+%H:%M:%S')] [2/3] 更新完成" >> "$LOG"
 
 # 產生地圖
-echo "[3/3] 產生地圖..." >> "$LOG"
+echo "[$(date '+%H:%M:%S')] [3/3] 產生地圖..." >> "$LOG"
 $PYTHON generate_viewer.py >> "$LOG" 2>&1
+echo "[$(date '+%H:%M:%S')] [3/3] 產生完成" >> "$LOG"
 
 # 檢查有沒有變動
 if $GIT diff --quiet spots.json index.html viewer.html; then
