@@ -12,6 +12,11 @@
   - 監測網址：`https://liuxvuse.github.io/pikmin-bloom-map/`
   - 可在 Cloudflare Dashboard → Web Analytics 查看訪客數據
 
+- **README 補充橋接說明**
+  - 新增「🚀 帶我飛！GPS 橋接」章節
+  - 包含使用條件、下載連結（latest release）、三步驟教學、停止飛行說明
+  - QR code 縮小至 180px
+
 ---
 
 ## ✅ 先前完成（2026-05-17）
@@ -39,6 +44,7 @@
   - 若 24 小時後仍無資料，檢查 script 是否正確載入（F12 → Network → 搜尋 beacon）
 
 - **Step 2：按需求繼續開發新功能**（目前無緊急待辦）
+
 
 ---
 
