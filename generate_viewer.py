@@ -1334,43 +1334,61 @@ function copyJKOAccount() {
   </div>
 </div>
 
-<footer style="text-align:center;padding:32px 20px 40px;font-size:0.82rem;color:#888;line-height:2;border-top:1px solid #f0f0f0;margin-top:8px">
-  <div style="margin-bottom:12px;font-size:0.9rem;font-weight:700;color:#374151">🍄 皮克敏明信片地圖</div>
-  <div style="max-width:480px;margin:0 auto 12px;font-size:0.8rem;color:#999;line-height:1.8">
-    這是一個由玩家自製的互動地圖，整合了臉書社團「皮克敏(Pikmin Bloom)明信片GPS 座標」的座標資料。<br>
-    支援聚合地圖、搜尋篩選、收藏、揪團廣場等功能，全裝置友好。
-  </div>
-  <div style="margin-bottom:8px;color:#aaa;font-size:0.78rem">
-    深深感謝臉書社團「<strong style="color:#f97316">皮克敏(Pikmin Bloom)明信片GPS 座標</strong>」的所有成員 🙏<br>
-    每一筆座標、每一張明信片、每一個花點與菇點，都是大家無私分享的成果 🌸🍄
-  </div>
-  <div style="margin-bottom:8px">
-    歡迎加我的皮克敏好友，送我美麗的明信片 🌸<br>
-    我的好友代碼：<span onclick="copyFC()" style="color:#374151;font-family:monospace;font-size:0.9rem;font-weight:700;cursor:pointer;border-bottom:1px dashed #374151" title="點擊複製">142744855919</span>
-    <span id="fc-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span>
-  </div>
-  <div style="margin-bottom:10px;font-size:0.78rem">
-    如果這個網站有幫到你，歡迎打虛擬幣到我的多幣錢包 👇<br>
-    <span id="wallet-addr" onclick="copyWallet()" style="color:#7c3aed;font-family:monospace;cursor:pointer;border-bottom:1px dashed #7c3aed" title="點擊複製">liupony2000.x</span>
-    <span style="font-size:0.72rem;color:#bbb;margin-left:6px">（這真的是錢包地址，點擊複製）</span>
-    <span id="wallet-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span>
-  </div>
-  <div style="margin-bottom:16px">
-    <div style="display:inline-flex;align-items:center;gap:28px;background:#fff5f5;border:1px solid #fecaca;border-radius:14px;padding:20px 32px">
-      <div style="flex-shrink:0;text-align:center">
-        <img src="jko_qr.jpg" alt="街口支付 QR Code" onclick="openLightbox(this.src)" style="width:130px;border-radius:8px;cursor:zoom-in" title="點擊放大">
-        <div style="margin-top:6px"><a href="jko_qr.jpg" download="街口支付QR.jpg" style="font-size:0.72rem;color:#e8000d;text-decoration:none">⬇ 下載 QR</a></div>
+<footer style="padding:40px 32px 32px;border-top:1px solid #f0f0f0;margin-top:8px;font-size:0.82rem;color:#888;line-height:1.8">
+  <div style="display:flex;flex-wrap:wrap;gap:40px;max-width:960px;margin:0 auto 28px">
+
+    <!-- 欄 1：關於地圖 -->
+    <div style="flex:1;min-width:220px">
+      <div style="font-size:0.95rem;font-weight:700;color:#374151;margin-bottom:10px">🍄 皮克敏明信片地圖</div>
+      <div style="color:#999;font-size:0.8rem;line-height:1.9;margin-bottom:10px">
+        這是一個由玩家自製的互動地圖，整合了臉書社團「皮克敏(Pikmin Bloom)明信片GPS 座標」的座標資料。<br>
+        支援聚合地圖、搜尋篩選、收藏、揪團廣場等功能，全裝置友好。
       </div>
-      <div style="text-align:left;font-size:0.85rem;color:#555;line-height:2.2">
-        <div style="font-weight:700;color:#e8000d;font-size:0.95rem;margin-bottom:6px">街口支付抖內 ☕</div>
-        <div>街口代碼：<span onclick="copyJKOCode()" style="color:#e8000d;font-family:monospace;font-size:1rem;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">396</span>
-          <span id="jko-code-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span></div>
-        <div>街口帳號：<span onclick="copyJKOAccount()" style="color:#e8000d;font-family:monospace;font-size:1rem;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">901238319</span>
-          <span id="jko-account-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span></div>
+      <div style="color:#aaa;font-size:0.78rem;line-height:1.9">
+        深深感謝臉書社團「<strong style="color:#f97316">皮克敏(Pikmin Bloom)明信片GPS 座標</strong>」的所有成員 🙏<br>
+        每一筆座標、每一張明信片、每一個花點與菇點，都是大家無私分享的成果 🌸🍄
       </div>
     </div>
+
+    <!-- 欄 2：好友代碼 -->
+    <div style="flex:1;min-width:200px">
+      <div style="font-size:0.95rem;font-weight:700;color:#374151;margin-bottom:10px">🌸 加我好友</div>
+      <div style="color:#888;font-size:0.82rem;line-height:1.9;margin-bottom:10px">
+        歡迎加我的皮克敏好友，送我美麗的明信片 🌸
+      </div>
+      <div style="font-size:0.8rem;color:#555;margin-bottom:4px">好友代碼</div>
+      <div>
+        <span onclick="copyFC()" style="color:#374151;font-family:monospace;font-size:1.05rem;font-weight:700;cursor:pointer;border-bottom:1px dashed #374151" title="點擊複製">142744855919</span>
+        <span id="fc-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span>
+      </div>
+    </div>
+
+    <!-- 欄 3：支持作者 -->
+    <div style="flex:1;min-width:220px">
+      <div style="font-size:0.95rem;font-weight:700;color:#374151;margin-bottom:10px">☕ 支持作者</div>
+      <div style="font-size:0.8rem;color:#888;margin-bottom:6px">多幣錢包</div>
+      <div style="margin-bottom:16px">
+        <span id="wallet-addr" onclick="copyWallet()" style="color:#7c3aed;font-family:monospace;cursor:pointer;border-bottom:1px dashed #7c3aed" title="點擊複製">liupony2000.x</span>
+        <span style="font-size:0.72rem;color:#bbb;margin-left:6px">（點擊複製）</span>
+        <span id="wallet-copied" style="display:none;font-size:0.72rem;color:#16a34a;margin-left:6px">✅ 已複製！</span>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:20px;background:#fff5f5;border:1px solid #fecaca;border-radius:12px;padding:14px 18px">
+        <div style="flex-shrink:0;text-align:center">
+          <img src="jko_qr.jpg" alt="街口支付 QR Code" onclick="openLightbox(this.src)" style="width:100px;border-radius:6px;cursor:zoom-in" title="點擊放大">
+          <div style="margin-top:5px"><a href="jko_qr.jpg" download="街口支付QR.jpg" style="font-size:0.7rem;color:#e8000d;text-decoration:none">⬇ 下載 QR</a></div>
+        </div>
+        <div style="text-align:left;font-size:0.82rem;color:#555;line-height:2.1">
+          <div style="font-weight:700;color:#e8000d;margin-bottom:4px">街口支付 ☕</div>
+          <div>代碼：<span onclick="copyJKOCode()" style="color:#e8000d;font-family:monospace;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">396</span>
+            <span id="jko-code-copied" style="display:none;font-size:0.7rem;color:#16a34a;margin-left:4px">✅</span></div>
+          <div>帳號：<span onclick="copyJKOAccount()" style="color:#e8000d;font-family:monospace;font-weight:700;cursor:pointer;border-bottom:1px dashed #e8000d" title="點擊複製">901238319</span>
+            <span id="jko-account-copied" style="display:none;font-size:0.7rem;color:#16a34a;margin-left:4px">✅</span></div>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <div style="font-size:0.75rem;color:#ccc">Powered by <strong style="color:#f97316">LIU</strong> 🍄</div>
+  <div style="text-align:center;font-size:0.75rem;color:#ccc;border-top:1px solid #f5f5f5;padding-top:16px;max-width:960px;margin:0 auto">Powered by <strong style="color:#f97316">LIU</strong> 🍄</div>
 </footer>
 </body>
 </html>"""
