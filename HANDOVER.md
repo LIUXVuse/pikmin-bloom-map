@@ -2,13 +2,24 @@
 
 ## ✅ 本次完成（2026-05-17）
 
+- **橋接下載按鈕補充免責聲明**
+  - 下載按鈕下方加上「無毒但請謹慎使用，墜機是有可能發生的！」
+  - 同步更新 viewer.html、generate_viewer.py、index.html
+
+- **加入 Cloudflare Web Analytics 流量統計**
+  - Token：`4d75dbf14e654bc5aab1a43b59500261`
+  - script 加入三個 HTML 檔案的 `</head>` 前
+  - 監測網址：`https://liuxvuse.github.io/pikmin-bloom-map/`
+  - 可在 Cloudflare Dashboard → Web Analytics 查看訪客數據
+
+---
+
+## ✅ 先前完成（2026-05-17）
+
 - **帶我飛！GPS 橋接 — 全功能完成**
   - `pikmin-bridge` 專案（Windows `E:\projects\pikmin-bridge\`）v2.0 開發完成
-  - 參考 LocWarp 模式重寫：DVT → Legacy DtSimulateLocation fallback、`_maybe_await` 兼容、`_Conn` 快取
-  - 修復 PyInstaller `--windowed` 的 stdout None 問題
-  - 加入桌面 log 檔（`~/Desktop/pikmin-bridge.log`）方便除錯
-  - **管理員身份執行，iOS 26 飛點測試成功** ✅
-  - exe 已打包（41 MB），Windows 端 HANDOVER.md 已建立
+  - 管理員身份執行，iOS 26 飛點測試成功 ✅
+  - exe 已打包上傳 Releases（latest 自動抓最新版）
   - 網頁端：卡片「🚀 帶我飛！」按鈕、Tab 列下載入口、Toast 通知、說明 Modal 全部上線
 
 ---
@@ -23,19 +34,11 @@
 
 ## 🔴 下一個對話要先做
 
-- **Step 1：上傳 exe 到 GitHub Releases**
-  - 去 `https://github.com/LIUXVuse/pikmin-bloom-map/releases/new`
-  - 上傳 `E:\projects\pikmin-bridge\dist\pikmin-bridge.exe`
-  - Tag 名稱：`v1.0-bridge`，標題：`皮克敏 GPS 橋接 v1.0`
+- **Step 1：確認 Web Analytics 有收到數據**
+  - 開 Cloudflare Dashboard → Web Analytics，確認有訪客資料進來
+  - 若 24 小時後仍無資料，檢查 script 是否正確載入（F12 → Network → 搜尋 beacon）
 
-- **Step 2：更新網頁下載連結**
-  - 找 viewer.html / generate_viewer.py / index.html 裡的 `BRIDGE_DL`
-  - 改成正確的 Release 下載 URL（格式：`https://github.com/LIUXVuse/pikmin-bloom-map/releases/download/v1.0-bridge/pikmin-bridge.exe`）
-  - commit + push
-
-- **Step 3：說明頁補充「需用管理員身份執行」**
-  - 橋接說明 Modal 裡加一行提示
-  - iOS 17+ 必須用管理員執行，否則隧道建立失敗
+- **Step 2：按需求繼續開發新功能**（目前無緊急待辦）
 
 ---
 
@@ -43,8 +46,12 @@
 
 ### 橋接程式
 - **必須管理員身份執行**（iOS 17+ TCP 隧道需要，普通身份會 `[Errno 5] 存取被拒`）
-- `BRIDGE_DL` 連結目前是佔位符，exe 尚未上傳到 Releases，點下載會 404
+- `BRIDGE_DL` 指向 latest release 自動抓最新版
 - Windows 端完整說明在 `E:\projects\pikmin-bridge\HANDOVER.md`
+
+### Web Analytics
+- Cloudflare Web Analytics token：`4d75dbf14e654bc5aab1a43b59500261`
+- 需等幾分鐘讓 GitHub Pages CDN 刷新，才會開始收到資料
 
 ### 前端三檔同步規則
 ```
