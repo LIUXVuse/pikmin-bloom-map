@@ -80,6 +80,36 @@ push 完 GitHub Pages 自動重新部署。
 }
 ```
 
+## 🚀 帶我飛！GPS 橋接（傳送到景點座標）
+
+點地圖上任一景點的「🚀 帶我飛！」按鈕，可以把 iPhone 的 GPS 位置直接傳送到該座標。
+
+### 使用條件
+
+- iPhone（iOS 16+）
+- Windows 電腦
+- 已安裝 iTunes
+- USB 連接手機並點「信任此電腦」
+- iPhone 開啟「開發者模式」（設定 → 隱私權與安全性 → 開發者模式）
+
+### 下載橋接程式
+
+➡️ **[下載 pikmin-bridge.exe（Windows）](https://github.com/LIUXVuse/pikmin-bridge/releases/latest/download/pikmin-bridge.exe)**
+
+> 無毒但請謹慎使用，墜機是有可能發生的！
+
+### 使用步驟
+
+1. 下載後，右鍵 → **以系統管理員執行**（必須，否則連線失敗）
+2. 點「開始橋接」，等到出現綠燈
+3. 回到地圖，點任一景點的「🚀 帶我飛！」
+
+### 停止飛行
+
+在橋接程式點「停止橋接」，或直接關掉程式，GPS 會自動回到實際位置。
+
+---
+
 ## 注意事項
 
 - `auth_state.json` 含 Facebook cookie，不上傳 GitHub（已加 .gitignore）
