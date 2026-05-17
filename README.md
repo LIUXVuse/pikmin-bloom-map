@@ -105,4 +105,4 @@ Powered by **LIU** 🍄
 - 街口代碼：`396`
 - 街口帳號：`901238319`
 
-![街口支付 QR Code](jko_qr.jpg)
+<img src="jko_qr.jpg" alt="街口支付 QR Code" width="180">
