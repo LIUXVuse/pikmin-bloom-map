@@ -1483,7 +1483,7 @@ function copyJKOAccount() {
 <script>
 // ── GPS 橋接 ────────────────────────────────────────────────────────────────
 const BRIDGE_URL = 'http://127.0.0.1:9998';
-const BRIDGE_DL  = 'https://github.com/LIUXVuse/pikmin-bridge/releases/download/v2.0/pikmin-bridge.exe';
+const BRIDGE_DL  = 'https://github.com/LIUXVuse/pikmin-bridge/releases/latest/download/pikmin-bridge.exe';
 
 let _toastTimer = null;
 function showToast(msg, duration = 2800) {
