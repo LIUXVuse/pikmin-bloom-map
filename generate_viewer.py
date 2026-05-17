@@ -178,6 +178,68 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
 }
 .map-btn:hover { background: #dbeafe; color: #1d4ed8; }
 
+/* ── 帶我飛按鈕 ── */
+.fly-btn {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 4px 0;
+  font-size: 0.72rem;
+  color: #fff;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  text-align: center;
+  font-weight: 600;
+}
+.fly-btn:hover { opacity: 0.88; }
+.fly-btn:active { transform: scale(0.97); }
+.fly-btn.flying { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.fly-btn.fly-err { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+
+/* ── 橋接下載按鈕 ── */
+.bridge-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  font-size: 0.76rem;
+  color: #fff;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.bridge-dl-btn:hover { opacity: 0.85; }
+
+/* ── Toast 通知 ── */
+#fly-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: #1f2937;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  z-index: 9999;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#fly-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
 .card.highlighted {
   outline: 3px solid #f97316;
   box-shadow: 0 0 0 4px rgba(249,115,22,0.25), 0 4px 12px rgba(0,0,0,0.14);
@@ -382,6 +444,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
   <button class="filter-btn" id="fav-btn" data-filter="fav" onclick="toggleFavFilter()">❤️ 收藏</button>
   <button class="filter-btn" onclick="randomSpot()" style="white-space:nowrap">🎲 隨機</button>
   <button class="filter-btn" onclick="openBoardModal()" style="white-space:nowrap">🌿 揪團廣場</button>
+  <a class="bridge-dl-btn" href="#" onclick="showBridgeInfo(); return false;" title="Windows 用戶下載 GPS 橋接程式">🚀 帶我飛（Windows）</a>
 <span id="count"></span>
 </div>
 
@@ -520,6 +583,7 @@ function renderCards(filtered) {
         <button class="copy-btn" onclick="copyCoords(this, ${s.lat}, ${s.lng})">📋 複製座標</button>
         <button class="map-btn" onclick="flyToMarker(${s._id})">🗺️ 在地圖上看</button>
         <button class="fav-btn${isFav?' saved':''}" onclick="toggleFav(${s._id}, this)">${isFav?'❤️ 已收藏':'🤍 加入收藏'}</button>
+        <button class="fly-btn" onclick="teleportToSpot(this, ${s.lat}, ${s.lng})">🚀 帶我飛！</button>
         ${linkHtml}
       </div>`;
     container.appendChild(card);
@@ -1390,6 +1454,91 @@ function copyJKOAccount() {
   </div>
   <div style="text-align:center;font-size:0.75rem;color:#ccc;border-top:1px solid #f5f5f5;padding-top:16px;max-width:960px;margin:0 auto">Powered by <strong style="color:#f97316">LIU</strong> 🍄</div>
 </footer>
+
+<!-- Toast 通知 -->
+<div id="fly-toast"></div>
+
+<!-- 橋接說明 Modal -->
+<div id="bridge-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:360px;width:90%;text-align:center;position:relative;">
+    <button onclick="document.getElementById('bridge-modal').style.display='none'" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#999">✕</button>
+    <div style="font-size:2.5rem;margin-bottom:8px">🚀</div>
+    <h3 style="margin:0 0 6px;color:#1f2937">帶我飛！GPS 橋接</h3>
+    <p style="font-size:0.85rem;color:#6b7280;margin:0 0 16px">讓按鈕直接控制你的 iPhone GPS 位置</p>
+    <div style="background:#f9fafb;border-radius:10px;padding:14px;text-align:left;font-size:0.82rem;color:#374151;margin-bottom:16px;line-height:1.7">
+      <b>使用條件：</b><br>
+      📱 iPhone（iOS 16+）<br>
+      💻 Windows 電腦<br>
+      🎵 已安裝 iTunes<br>
+      🔌 USB 連接並信任電腦
+    </div>
+    <a id="bridge-dl-link" href="#" download
+       style="display:block;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;padding:11px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.9rem;margin-bottom:10px">
+      ⬇️ 下載橋接程式（Windows .exe）
+    </a>
+    <p style="font-size:0.75rem;color:#9ca3af;margin:0">下載後執行，點「開始橋接」，再回來按「帶我飛！」</p>
+  </div>
+</div>
+
+<script>
+// ── GPS 橋接 ────────────────────────────────────────────────────────────────
+const BRIDGE_URL = 'http://127.0.0.1:9998';
+const BRIDGE_DL  = 'https://github.com/LIUXVuse/pikmin-bloom-map/releases/latest/download/PikminGPS橋接.exe';
+
+let _toastTimer = null;
+function showToast(msg, duration = 2800) {
+  const el = document.getElementById('fly-toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), duration);
+}
+
+async function teleportToSpot(btn, lat, lng) {
+  const orig = btn.textContent;
+  btn.textContent = '⏳ 傳送中…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${BRIDGE_URL}/teleport`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lat, lng }),
+      signal: AbortSignal.timeout(6000),
+    });
+    if (res.ok) {
+      btn.textContent = '✅ 傳送成功！';
+      btn.classList.add('flying');
+      showToast(`✅ 已傳送到 ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.classList.remove('flying');
+        btn.disabled = false;
+      }, 2000);
+    } else {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.detail || `HTTP ${res.status}`);
+    }
+  } catch (e) {
+    btn.textContent = '❌ 橋接未開啟';
+    btn.classList.add('fly-err');
+    const isTimeout = e.name === 'TimeoutError' || e.name === 'AbortError';
+    showToast(isTimeout
+      ? '⚠️ 連不到橋接程式，請先執行 exe'
+      : `⚠️ ${e.message}`
+    , 4000);
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.classList.remove('fly-err');
+      btn.disabled = false;
+    }, 3000);
+  }
+}
+
+function showBridgeInfo() {
+  document.getElementById('bridge-dl-link').href = BRIDGE_DL;
+  document.getElementById('bridge-modal').style.display = 'flex';
+}
+</script>
 </body>
 </html>"""
 
