@@ -429,6 +429,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; b
   .board-tab { font-size: 0.7rem; padding: 8px 2px; }
 }
 </style>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "4d75dbf14e654bc5aab1a43b59500261"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
 
