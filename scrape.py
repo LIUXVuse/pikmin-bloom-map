@@ -194,11 +194,21 @@ async def scrape_post(page, url: str, download_images: bool) -> dict | None:
     await page.goto(url, wait_until="domcontentloaded")
     await asyncio.sleep(4)
 
-    dialog = await page.query_selector('[role="dialog"]')
+    # 找所有 dialog，取第一個包含 GPS 座標的（避免抓到通知面板）
+    coord_pat = r'-?\d{1,3}\.\d{4,},\s*-?\d{1,3}\.\d{4,}'
+    dialogs = await page.query_selector_all('[role="dialog"]')
+    dialog = None
+    raw_text = ""
+    for d in dialogs:
+        t = await d.inner_text()
+        if re.search(coord_pat, t):
+            dialog = d
+            raw_text = t
+            break
+
     if not dialog:
         return None
 
-    raw_text = await dialog.inner_text()
     info = extract_info(raw_text, url)
     if not info:
         return None
