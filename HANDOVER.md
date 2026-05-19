@@ -1,36 +1,33 @@
 # 皮克敏明信片座標爬蟲 — 交接說明
 
-## ✅ 本次完成（2026-05-17）
+## ✅ 本次完成（2026-05-19）
 
-- **橋接下載按鈕補充免責聲明**
-  - 下載按鈕下方加上「無毒但請謹慎使用，墜機是有可能發生的！」
-  - 同步更新 viewer.html、generate_viewer.py、index.html
+- **修正 scraper 抓到通知面板的 bug**
+  - 問題：`query_selector('[role="dialog"]')` 只抓第一個，Facebook 通知面板也是 dialog，排在貼文前，導致抓到垃圾資料
+  - 修法：改用 `query_selector_all` 掃所有 dialog，找包含 GPS 座標的那個
+  - 檔案：`scrape.py` → `scrape_post()`
 
-- **加入 Cloudflare Web Analytics 流量統計**
-  - Token：`4d75dbf14e654bc5aab1a43b59500261`
-  - script 加入三個 HTML 檔案的 `</head>` 前
-  - 監測網址：`https://liuxvuse.github.io/pikmin-bloom-map/`
-  - 可在 Cloudflare Dashboard → Web Analytics 查看訪客數據
+- **清除 31 筆垃圾資料**
+  - 今天 (2026-05-19) 抓到的 31 筆均為通知欄文字（author = 通知全部未讀…）
+  - 全部 image_url 為空、座標重複（46.77575, 8.143117）
+  - 已從 spots.json 刪除，685 → 654 筆
 
-- **README 補充橋接說明**
-  - 新增「🚀 帶我飛！GPS 橋接」章節
-  - 包含使用條件、下載連結（latest release）、三步驟教學、停止飛行說明
-  - QR code 縮小至 180px
+- **手動補抓**
+  - 修完後立刻手動跑 `scrape.py`，找到 34 筆新貼文，圖片全部正常抓到（🖼）
 
 ---
 
 ## ✅ 先前完成（2026-05-17）
 
-- **帶我飛！GPS 橋接 — 全功能完成**
-  - `pikmin-bridge` 專案（Windows `E:\projects\pikmin-bridge\`）v2.0 開發完成
-  - 管理員身份執行，iOS 26 飛點測試成功 ✅
-  - exe 已打包上傳 Releases（latest 自動抓最新版）
-  - 網頁端：卡片「🚀 帶我飛！」按鈕、Tab 列下載入口、Toast 通知、說明 Modal 全部上線
+- **橋接下載按鈕補充免責聲明**
+- **加入 Cloudflare Web Analytics 流量統計**（token：`4d75dbf14e654bc5aab1a43b59500261`）
+- **README 補充橋接說明**
 
 ---
 
 ## ✅ 先前完成（2026-05-17 前）
 
+- **帶我飛！GPS 橋接 — 全功能完成**（`pikmin-bridge` v2.0，Windows `E:\projects\pikmin-bridge\`）
 - **update.sh 加時間戳**、**診斷排程耗時**
 - **頁尾街口支付 + 三欄佈局**
 - **揪團廣場全功能**（加好友 Tab、D1 無 CHECK constraint）
@@ -39,25 +36,28 @@
 
 ## 🔴 下一個對話要先做
 
-- **Step 1：確認 Web Analytics 有收到數據**
-  - 開 Cloudflare Dashboard → Web Analytics，確認有訪客資料進來
-  - 若 24 小時後仍無資料，檢查 script 是否正確載入（F12 → Network → 搜尋 beacon）
+- **Step 1：確認手動補抓結果**
+  - 檢查 spots.json 新增了幾筆、圖片是否都有（`image_url` 不為空）
+  - 若還有空的，代表那幾篇貼文本身沒有圖片（正常）
 
 - **Step 2：按需求繼續開發新功能**（目前無緊急待辦）
-
 
 ---
 
 ## ⚠️ 已知問題 / 注意事項
 
+### Scraper 穩定性
+- Facebook 隨時可能改 DOM，scraper 可能失效
+- 判斷異常的方法：`update.log` 裡新增 0 筆 or 全是「未命名」
+- 修完 scraper 後，**前一天的垃圾資料需手動清除**（過濾 author 包含「通知全部未讀」）
+
 ### 橋接程式
-- **必須管理員身份執行**（iOS 17+ TCP 隧道需要，普通身份會 `[Errno 5] 存取被拒`）
-- `BRIDGE_DL` 指向 latest release 自動抓最新版
+- **必須管理員身份執行**（iOS 17+ TCP 隧道需要）
 - Windows 端完整說明在 `E:\projects\pikmin-bridge\HANDOVER.md`
 
 ### Web Analytics
-- Cloudflare Web Analytics token：`4d75dbf14e654bc5aab1a43b59500261`
-- 需等幾分鐘讓 GitHub Pages CDN 刷新，才會開始收到資料
+- Cloudflare token：`4d75dbf14e654bc5aab1a43b59500261`
+- 監測網址：`https://liuxvuse.github.io/pikmin-bloom-map/`
 
 ### 前端三檔同步規則
 ```
